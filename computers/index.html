@@ -43,8 +43,8 @@
   .brand{justify-self:start;display:flex;align-items:center;gap:.8rem;background:none;cursor:pointer;text-transform:uppercase;letter-spacing:.13em;font-size:.76rem;font-weight:700}
   .brand-dot{width:8px;height:8px;border-radius:50%;background:currentColor;box-shadow:0 0 0 5px rgba(255,255,255,.12)}
   .track-toggle{position:relative;display:grid;grid-template-columns:1fr 1fr;align-items:center;gap:.2rem;padding:.24rem;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.22);border-radius:999px;backdrop-filter:blur(10px)}
-  .track-toggle button{position:relative;z-index:2;padding:.65rem 1rem;border-radius:999px;background:none;color:rgba(255,255,255,.62);font-size:.7rem;text-transform:uppercase;letter-spacing:.12em;cursor:pointer;transition:color .3s ease}
-  .track-toggle button.active{color:#000}
+  .track-toggle button,.track-toggle a{position:relative;z-index:2;padding:.65rem 1rem;border-radius:999px;background:none;color:rgba(255,255,255,.62);font-size:.7rem;text-transform:uppercase;letter-spacing:.12em;cursor:pointer;transition:color .3s ease;text-align:center}
+  .track-toggle button.active,.track-toggle a.active{color:#000}
   .toggle-pill{position:absolute;left:.24rem;top:.24rem;height:calc(100% - .48rem);width:calc(50% - .24rem);border-radius:999px;background:white;transition:transform .65s var(--ease)}
   body[data-mode="debate"] .toggle-pill{transform:translateX(100%)}
   body[data-page="landing"] .track-toggle{opacity:.35;pointer-events:none}
@@ -581,8 +581,8 @@
   <button class="brand" id="homeButton" aria-label="Return to landing page">Sully Mrkva</button>
   <div class="track-toggle" aria-label="Professional track switcher">
     <span class="toggle-pill"></span>
-    <button type="button" class="active" data-mode-select="computer">Computers</button>
-    <button type="button" data-mode-select="debate">Debate</button>
+    <a class="active" data-mode-select="computer" href="/computers/">Computers</a>
+    <a data-mode-select="debate" href="/debate/">Debate</a>
   </div>
   <a class="top-contact" href="https://calendly.com/smrkva30/intro-call?back=1&month=2026-08" target="_blank" rel="noopener noreferrer">Start a conversation</a>
 </header>
@@ -593,7 +593,7 @@
     <div class="landing-grid"></div>
 <div class="landing-intro">
       <p class="landing-kicker">Computer engineer — Cybersecurity researcher — Debate coach</p>
-      <h1 id="landingName" aria-label="Sully Mrkva"><span class="name-line first-name" data-name-enter="debate" data-nav-label="Enter Debate →" role="button" tabindex="0" aria-label="Open debate page">Sully</span><span class="name-line surname" data-name-enter="computer" data-nav-label="Enter Computers →" role="button" tabindex="0" aria-label="Open computers page">Mrkva</span></h1>
+      <h1 id="landingName" aria-label="Sully Mrkva"><a class="name-line first-name" data-name-enter="debate" data-nav-label="Enter Debate →" href="/debate/" aria-label="Open debate page">Sully</a><a class="name-line surname" data-name-enter="computer" data-nav-label="Enter Computers →" href="/computers/" aria-label="Open computers page">Mrkva</a></h1>
     <svg class="landing-signal" viewBox="0 150 1200 400" preserveAspectRatio="none" aria-hidden="true">
       <defs>
         <linearGradient id="landingDiscoveryGradient" x1="20" y1="0" x2="1180" y2="0" gradientUnits="userSpaceOnUse">
@@ -642,12 +642,12 @@
       </div>
     </div>
     <div class="landing-bottom" aria-label="Choose a professional track">
-      <button class="portal portal-debate" data-enter="debate">
+      <a class="portal portal-debate" data-enter="debate" href="/debate/">
         <span class="portal-title"><span class="portal-heading">Debate<small>Strategy, persuasion, and coaching</small></span><b>Enter track ↗</b></span>
-      </button>
-      <button class="portal portal-tech" data-enter="computer">
+      </a>
+      <a class="portal portal-tech" data-enter="computer" href="/computers/">
         <span class="portal-title"><span class="portal-heading">Computers<small>Systems, security, and hardware</small></span><b>Enter track ↗</b></span>
-      </button>
+      </a>
     </div>
   </section>
 
@@ -1025,33 +1025,12 @@
       if(switching) return;
       intro.classList.remove('name-debate-focus','name-computer-focus');
     };
-    const activateName = () => {
-      if(switching) return;
-      heading.classList.remove('name-debate-active','name-computer-active');
-      intro.classList.remove('name-debate-focus','name-computer-focus');
-      heading.classList.add(activeClass);
-      intro.classList.add(focusClass);
-      setTimeout(() => showTrack(mode), 340);
-    };
-
     namePart.addEventListener('mouseenter', previewName);
     namePart.addEventListener('mouseleave', clearPreview);
     namePart.addEventListener('focus', previewName);
     namePart.addEventListener('blur', clearPreview);
-    namePart.addEventListener('click', activateName);
-    namePart.addEventListener('keydown', e => {
-      if(e.key === 'Enter' || e.key === ' '){
-        e.preventDefault();
-        activateName();
-      }
-    });
   });
-  document.querySelectorAll('[data-enter]').forEach(btn => btn.addEventListener('click', () => showTrack(btn.dataset.enter)));
-  modeButtons.forEach(btn => btn.addEventListener('click', () => {
-    if(body.dataset.page === 'landing' || btn.dataset.modeSelect !== body.dataset.mode){
-      showTrack(btn.dataset.modeSelect);
-    }
-  }));
+  /* Track controls are real links. No click interception is needed. */
   document.getElementById('homeButton').addEventListener('click', () => showLanding());
 
   document.querySelectorAll('.offering-button').forEach(btn => {
@@ -1074,8 +1053,8 @@
 
   function applyRouteFromLocation(){
     const path = location.pathname.replace(/\/+$/, '') || '/';
-    if(path === '/debate') showTrack('debate', false, false);
-    else if(path === '/computers') showTrack('computer', false, false);
+    if(path.endsWith('/debate')) showTrack('debate', false, false);
+    else if(path.endsWith('/computers')) showTrack('computer', false, false);
     else showLanding(false, false);
   }
 
