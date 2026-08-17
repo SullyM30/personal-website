@@ -1058,9 +1058,6 @@
     else showLanding(false, false);
   }
 
-  window.addEventListener('popstate', applyRouteFromLocation);
-  applyRouteFromLocation();
-
   const typewriter = document.getElementById('landingTypewriter');
   let typewriterPlayed = false;
   let typewriterRunId = 0;
@@ -1130,7 +1127,10 @@
     scheduleTypewriter(tick, 420, runId);
   }
 
-  runLandingTypewriter();
+  window.addEventListener('popstate', applyRouteFromLocation);
+  applyRouteFromLocation();
+
+  if(body.dataset.page === 'landing') runLandingTypewriter();
 
   const progress = document.querySelector('.progress span');
   const testimonialSlider = document.getElementById('testimonialSlider');
