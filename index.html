@@ -85,6 +85,8 @@
     --tech-cyan:#6f93a8;
     --tech-green:#91a89a;
     --tech-muted:#8a99ab;
+    --radar-green:#7ecb56;
+    --radar-green-dim:rgba(126,203,86,.5);
     --serif:Georgia,"Times New Roman",serif;
     --sans:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
     --mono:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",monospace;
@@ -110,7 +112,6 @@
   .track-toggle button.active,.track-toggle a.active{color:#000}
   .toggle-pill{position:absolute;left:.24rem;top:.24rem;height:calc(100% - .48rem);width:calc(50% - .24rem);border-radius:999px;background:white;transition:transform .65s var(--ease)}
   body[data-mode="debate"] .toggle-pill{transform:translateX(100%)}
-  body[data-page="landing"] .track-toggle{opacity:.35;pointer-events:none}
   .top-contact{justify-self:end;font-size:.72rem;text-transform:uppercase;letter-spacing:.14em;border-bottom:1px solid currentColor;padding-bottom:.3rem}
 
   /* global transition */
@@ -320,21 +321,194 @@
   .manifesto-meta{display:grid;grid-template-columns:.4fr 1fr;gap:4vw;margin-top:6rem;padding-top:1.6rem;border-top:1px solid rgba(238,246,255,.16);color:var(--tech-muted);font-size:.92rem;line-height:1.7}
   .manifesto-meta b{color:var(--tech-green);font:500 .72rem/1 var(--mono);letter-spacing:.12em;text-transform:uppercase}
 
-  .tech-projects{padding:3rem 0 8rem;border-top:1px solid rgba(238,246,255,.15)}
+  .tech-projects{padding:150px 0 6rem}
   .tech-projects-head{padding:0 4vw 4rem;display:flex;justify-content:space-between;align-items:end}
-  .tech-projects-head h2{margin:0;font:700 clamp(3rem,6vw,6rem)/.9 var(--sans);letter-spacing:-.06em;text-transform:uppercase}
+  .tech-projects-head h1{margin:0;font:700 clamp(3rem,6vw,6rem)/.9 var(--sans);letter-spacing:-.06em;text-transform:uppercase}
   .tech-projects-head p{margin:0;color:var(--tech-muted);font:400 .72rem/1.4 var(--mono);text-transform:uppercase;letter-spacing:.12em;text-align:right}
-  .tech-project{position:relative;min-height:340px;padding:3rem 4vw;display:grid;grid-template-columns:.38fr 1.3fr .72fr;gap:4vw;align-items:center;border-top:1px solid rgba(238,246,255,.13);overflow:hidden;isolation:isolate}
-  .tech-project:last-child{border-bottom:1px solid rgba(238,246,255,.13)}
-  .tech-project::before{content:"";position:absolute;z-index:-1;inset:0;background:linear-gradient(90deg,rgba(111,147,168,.10),transparent 62%);transform:translateX(-102%);transition:transform .75s var(--ease)}
-  .tech-project:hover::before{transform:none}
-  .tech-num{font:500 .72rem/1 var(--mono);color:var(--tech-green);letter-spacing:.14em}
-  .tech-project h3{margin:0 0 1rem;font:600 clamp(2.7rem,5vw,5.7rem)/.88 var(--sans);letter-spacing:-.055em}
-  .tech-project h3 em{font-style:normal;color:transparent;-webkit-text-stroke:1px rgba(238,246,255,.4)}
-  .tech-project-copy p{max-width:680px;color:var(--tech-muted);line-height:1.7}
-  .project-specs{font:400 .7rem/1.8 var(--mono);color:rgba(238,246,255,.5);text-transform:uppercase;letter-spacing:.08em}
-  .project-specs span{display:block;border-bottom:1px solid rgba(238,246,255,.12);padding:.55rem 0}
-  .signal-visual{position:absolute;right:4vw;bottom:1.6rem;width:28vw;height:80px;opacity:.22;pointer-events:none}
+  .radar-field{position:relative;padding:1rem 4vw 3rem;display:flex;flex-direction:column}
+  .radar-field::before{
+    content:"";position:absolute;inset:0;z-index:0;pointer-events:none;
+    background-image:
+      linear-gradient(rgba(88,225,255,.07) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(88,225,255,.07) 1px,transparent 1px);
+    background-size:64px 64px;
+    mask-image:radial-gradient(circle at 50% 46%,black,transparent 72%);
+    -webkit-mask-image:radial-gradient(circle at 50% 46%,black,transparent 72%);
+  }
+  .radar-ambient-glow{
+    position:absolute;z-index:0;pointer-events:none;left:50%;top:46%;
+    width:min(64vw,900px);aspect-ratio:1;transform:translate(-50%,-50%);
+    border-radius:50%;filter:blur(8px);
+    background:radial-gradient(circle,rgba(111,147,168,.18),rgba(126,203,86,.09) 35%,transparent 70%);
+  }
+
+  .hud-status{position:relative;z-index:2;display:flex;align-items:center;gap:.7rem;margin-bottom:1.4rem;color:var(--radar-green);font:500 .7rem/1 var(--mono);letter-spacing:.14em;text-transform:uppercase}
+  .hud-status .dot{width:6px;height:6px;border-radius:50%;background:var(--radar-green);box-shadow:0 0 6px rgba(126,203,86,.7);animation:blip-breathe 2.4s ease-in-out infinite}
+  .hud-status .brg{margin-left:auto;color:var(--tech-muted)}
+  .hud-status .brg b{color:var(--radar-green);font-weight:500}
+
+  .radar-wrap{position:relative;z-index:2;display:flex;justify-content:center;margin-top:1rem}
+  .radar-frame{position:relative;width:min(88vmin,860px);aspect-ratio:1}
+  .corner{position:absolute;width:22px;height:22px;border:1px solid rgba(238,246,255,.28)}
+  .corner-tl{top:-14px;left:-14px;border-right:none;border-bottom:none}
+  .corner-tr{top:-14px;right:-14px;border-left:none;border-bottom:none}
+  .corner-bl{bottom:-14px;left:-14px;border-right:none;border-top:none}
+  .corner-br{bottom:-14px;right:-14px;border-left:none;border-top:none}
+
+  .radar-stage{position:absolute;inset:6%;border-radius:50%}
+  .radar-rings{position:absolute;inset:0;width:100%;height:100%;overflow:visible;animation:crt-flicker 6.4s infinite}
+  .radar-rings circle{fill:none;stroke:rgba(126,203,86,.4);stroke-width:1.8;filter:url(#radarGrain)}
+  .radar-rings circle.outer{stroke:rgba(126,203,86,.6)}
+  .radar-rings line{stroke:rgba(126,203,86,.14)}
+  .radar-rings .tick{stroke:rgba(126,203,86,.3)}
+  .radar-rings .tick.major{stroke:rgba(126,203,86,.65)}
+  .radar-rings text{fill:var(--radar-green);font:500 12px/1 var(--mono);letter-spacing:.06em}
+  @keyframes crt-flicker{
+    0%,100%{opacity:1}
+    4%{opacity:.91}
+    8%{opacity:1}
+    22%{opacity:.95}
+    30%{opacity:1}
+    55%{opacity:.88}
+    61%{opacity:1}
+    78%{opacity:.94}
+    85%{opacity:1}
+  }
+
+  .radar-sweep{
+    position:absolute;inset:0;border-radius:50%;overflow:hidden;
+    animation:sweep-spin 9s linear infinite;
+    mix-blend-mode:screen;
+  }
+  .radar-sweep::before{
+    content:"";position:absolute;inset:0;border-radius:50%;
+    background:conic-gradient(from 0deg,
+      rgba(126,203,86,0) 0deg,
+      rgba(126,203,86,0) 300deg,
+      rgba(126,203,86,.25) 344deg,
+      rgba(126,203,86,.8) 359deg,
+      rgba(126,203,86,0) 360deg);
+  }
+  body.radar-locked .radar-sweep{animation-play-state:paused}
+  @keyframes sweep-spin{to{transform:rotate(360deg)}}
+
+  .radar-center{position:absolute;left:50%;top:50%;width:8px;height:8px;margin:-4px;border-radius:50%;background:var(--radar-green);box-shadow:0 0 8px rgba(126,203,86,.7);z-index:3}
+
+  .lock-line{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:2}
+  .lock-line path{fill:none;stroke:var(--tech-white);stroke-width:1.4;stroke-dasharray:1 1;stroke-dashoffset:1;opacity:0;transition:stroke-dashoffset .5s var(--ease),opacity .3s var(--ease)}
+  body.radar-locked .lock-line path{stroke-dashoffset:0;opacity:.85}
+
+  .blip{position:absolute;transform:translate(-50%,-50%);z-index:4}
+  .blip-dot{position:relative;width:21px;height:21px;border-radius:50%;background:var(--radar-green);cursor:pointer;box-shadow:0 0 0 rgba(126,203,86,.5);animation:blip-pulse 2.2s ease-in-out infinite}
+  .blip-dot::before{
+    content:"";position:absolute;inset:-8px;border-radius:50%;border:1px solid var(--radar-green-dim);
+    opacity:0;transform:scale(.4);
+  }
+  .blip-dot::after{content:"";position:absolute;inset:0;border-radius:50%;box-shadow:0 0 10px rgba(126,203,86,.8);animation:blip-breathe 2.2s ease-in-out infinite}
+  @keyframes blip-breathe{0%,100%{opacity:.55}50%{opacity:1}}
+  @keyframes blip-pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.18)}}
+
+  .blip:hover .blip-dot{animation-play-state:paused;transform:scale(1.25)}
+
+  .blip.pinged .blip-dot::before{animation:ping-ring .9s var(--ease)}
+  @keyframes ping-ring{
+    0%{opacity:.9;transform:scale(.4)}
+    100%{opacity:0;transform:scale(2.6)}
+  }
+
+  .blip-label{
+    position:absolute;left:24px;top:50%;transform:translateY(-50%) translateX(-4px);
+    white-space:nowrap;padding:.6rem .9rem;border:1px solid rgba(126,203,86,.35);
+    background:rgba(11,16,25,.92);backdrop-filter:blur(4px);
+    font:500 1.02rem/1.15 var(--mono);letter-spacing:.02em;color:var(--radar-green);
+    opacity:0;pointer-events:none;transition:opacity .35s var(--ease),transform .35s var(--ease);
+  }
+  .blip[data-side="left"] .blip-label{left:auto;right:24px;transform:translateY(-50%) translateX(4px)}
+  .blip.pinged .blip-label,.blip.selected .blip-label,.blip:hover .blip-label{opacity:1;transform:translateY(-50%) translateX(0);pointer-events:auto}
+  .blip.selected .blip-dot{background:var(--tech-white)}
+  .blip.selected .blip-dot::after{animation:none;box-shadow:0 0 14px rgba(238,246,255,.9)}
+  .blip.selected .blip-label{border-color:var(--tech-white);color:var(--tech-white)}
+
+  .cursor-aura{
+    position:fixed;left:0;top:0;width:200px;height:200px;margin:-100px 0 0 -100px;
+    border-radius:50%;pointer-events:none;z-index:1;
+    background:radial-gradient(circle,rgba(126,203,86,.14),rgba(126,203,86,.05) 45%,transparent 72%);
+    opacity:0;transition:opacity .4s ease;will-change:transform;
+  }
+  .cursor-aura.active{opacity:1}
+
+  .hint{position:relative;z-index:2;margin-top:1.6rem;text-align:center;color:var(--tech-muted);font:400 .68rem/1.4 var(--mono);letter-spacing:.1em;text-transform:uppercase}
+  .hint b{color:var(--radar-green);font-weight:500}
+
+  .panel{
+    position:fixed;top:0;right:0;height:100%;width:min(460px,92vw);z-index:20;
+    background:var(--tech-black);border-left:1px solid rgba(126,203,86,.3);
+    box-shadow:-30px 0 60px rgba(0,0,0,.5);isolation:isolate;
+    padding:1.7rem 2.2rem 1.3rem;transform:translateX(100%);transition:transform .5s var(--ease);
+    font-family:var(--mono);display:flex;flex-direction:column;justify-content:flex-start;
+  }
+  body.radar-locked .panel{transform:translateX(0)}
+  .panel::before{
+    content:"";position:absolute;inset:0;pointer-events:none;
+    background-image:repeating-linear-gradient(to bottom,rgba(126,203,86,.05) 0,rgba(126,203,86,.05) 1px,transparent 1px,transparent 3px);
+    mix-blend-mode:screen;opacity:.5;
+  }
+  #radarPanelTerm{flex:1 1 auto;min-height:0;overflow-y:auto}
+  .term-line{
+    position:relative;margin:0 0 .4rem;color:var(--radar-green);font-weight:500;
+    font-size:clamp(.72rem,1.55vh,.9rem);line-height:1.55;letter-spacing:.015em;
+    white-space:pre-wrap;word-break:break-word;
+    text-shadow:0 0 5px rgba(126,203,86,.55),0 0 16px rgba(126,203,86,.28);
+    opacity:0;transform:translateY(3px);transition:opacity .18s linear,transform .18s linear;
+  }
+  .term-line.visible{opacity:1;transform:translateY(0)}
+  .term-line.blank{height:.5rem;margin:0}
+  .term-line.prompt{color:var(--tech-muted);text-shadow:0 0 4px rgba(138,153,171,.35)}
+  .term-line.prompt b{color:var(--radar-green);font-weight:600;text-shadow:0 0 6px rgba(126,203,86,.6),0 0 16px rgba(126,203,86,.3)}
+  .term-line.kv b{display:inline-block;min-width:3.8em;color:var(--tech-muted);font-weight:500;text-shadow:0 0 4px rgba(138,153,171,.3)}
+  .term-line.kv em{color:var(--tech-white);font-style:normal;font-weight:700;font-size:1.06em;text-shadow:0 0 6px rgba(238,246,255,.55),0 0 18px rgba(126,203,86,.4)}
+  .term-line.desc{color:#a9d98c}
+  .term-line.label{color:var(--tech-white);font-weight:700;font-size:1.2em;letter-spacing:.18em;text-shadow:0 0 8px rgba(126,203,86,.7),0 0 22px rgba(126,203,86,.4)}
+  .term-line.spec{color:var(--radar-green)}
+  .term-line.ready{color:var(--tech-muted)}
+  .term-cursor{display:inline-block;width:.55em;height:1em;background:var(--radar-green);vertical-align:text-bottom;margin-left:.15em;opacity:0;box-shadow:0 0 8px rgba(126,203,86,.9);animation:cursor-blink 1.1s steps(1) infinite}
+
+  .term-line.attachments{display:flex;flex-wrap:wrap;gap:.6rem;margin:.1rem 0 .5rem}
+  .term-thumb{
+    display:flex;flex-direction:column;gap:.4rem;width:calc(50% - .3rem);
+    background:none;border:1px solid rgba(126,203,86,.3);padding:.4rem;cursor:pointer;
+    color:var(--tech-muted);font:500 .6rem/1.3 var(--mono);text-align:left;letter-spacing:.01em;
+    transition:border-color .2s ease,transform .2s ease;
+  }
+  .term-thumb:hover{border-color:var(--radar-green);transform:translateY(-2px)}
+  .term-thumb img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block;filter:saturate(.75) brightness(.88);border:1px solid rgba(126,203,86,.18)}
+  .term-thumb:hover img{filter:none}
+  .term-thumb-pdf{width:100%;aspect-ratio:4/3;display:flex;align-items:center;justify-content:center;border:1px dashed rgba(126,203,86,.4);background:rgba(126,203,86,.06);color:var(--radar-green);font:700 .85rem/1 var(--mono);letter-spacing:.1em;text-shadow:0 0 8px rgba(126,203,86,.6)}
+  .term-thumb span:not(.term-thumb-pdf)::before{content:"⤢ ";color:var(--radar-green)}
+
+  .lightbox{
+    position:fixed;inset:0;z-index:40;display:flex;align-items:center;justify-content:center;
+    background:rgba(6,8,13,.88);backdrop-filter:blur(6px);padding:5vh 5vw;
+    opacity:0;pointer-events:none;transition:opacity .3s ease;cursor:zoom-out;
+  }
+  .lightbox.active{opacity:1;pointer-events:auto}
+  .lightbox-inner{max-width:min(920px,90vw);max-height:88vh;display:flex;flex-direction:column;gap:.9rem;transform:scale(.96);transition:transform .3s var(--ease);cursor:default}
+  .lightbox.active .lightbox-inner{transform:scale(1)}
+  .lightbox-inner img{max-width:100%;max-height:76vh;object-fit:contain;display:block;border:1px solid rgba(126,203,86,.35);box-shadow:0 0 40px rgba(126,203,86,.15)}
+  .lightbox-caption{color:var(--radar-green);font:500 .8rem/1.4 var(--mono);text-align:center;text-shadow:0 0 6px rgba(126,203,86,.5)}
+  .term-line.ready.visible .term-cursor{opacity:1}
+  @keyframes cursor-blink{0%,49%{opacity:1}50%,100%{opacity:0}}
+  .panel-close{
+    position:relative;display:inline-flex;align-items:center;gap:.6rem;margin-top:.7rem;flex:none;
+    background:none;border:none;color:var(--tech-muted);font:500 .78rem/1 var(--mono);
+    letter-spacing:.04em;cursor:pointer;padding:0;opacity:0;transition:opacity .3s ease,color .2s ease;
+  }
+  .panel-close.visible{opacity:1}
+  .panel-close:hover{color:var(--radar-green)}
+  .panel-close::before{content:">";color:var(--radar-green)}
+
+  .radar-scrim{position:fixed;inset:0;z-index:19;background:rgba(6,8,13,.5);opacity:0;pointer-events:none;transition:opacity .5s var(--ease)}
+  body.radar-locked .radar-scrim{opacity:1;pointer-events:auto}
 
   .tech-timeline{padding:10rem 4vw;display:grid;grid-template-columns:.58fr 1.2fr;gap:8vw}
   .tech-timeline h2{position:sticky;top:130px;align-self:start;margin:0;font:600 clamp(3rem,6vw,6rem)/.9 var(--sans);letter-spacing:-.06em;text-transform:uppercase}
@@ -616,14 +790,14 @@
     .landing{padding:110px 5vw 5vw}.landing-profile{grid-template-columns:210px minmax(0,1fr);gap:2rem}.landing-profile-photo{max-width:238px;padding:12px}.landing-summary{max-width:560px}.landing-signal{width:100vw;max-width:100vw;left:50%;transform:translateX(-50%);height:170px;opacity:.64}.landing-bottom{grid-template-columns:1fr}.portal+.portal{border-left:0;border-top:1px solid rgba(23,25,29,.23);padding-left:0}.portal{min-height:190px}.portal-title{margin-top:3.5rem}
     .computer-hero,.debate-hero{grid-template-columns:1fr;padding-left:5vw;padding-right:5vw}.computer-side,.debate-side{margin-top:4rem;max-width:620px}.code-rain{opacity:.5;width:60vw}.computer-hero h1 span,.debate-hero h1 span{margin-left:0}
     .tech-manifesto,.tech-timeline,.debate-bio{padding-left:5vw;padding-right:5vw}.manifesto-meta,.tech-timeline,.debate-bio,.record-intro,.offerings-title{grid-template-columns:1fr}.tech-timeline h2{position:static;margin-bottom:4rem}.bio-columns{column-count:1}.record-line{display:grid;grid-template-columns:1fr 1fr}
-    .tech-project{grid-template-columns:.2fr 1fr}.project-specs{grid-column:2}.signal-visual{display:none}.tech-projects-head{padding-left:5vw;padding-right:5vw}
+    .tech-projects-head{padding-left:5vw;padding-right:5vw}.radar-field{padding-left:5vw;padding-right:5vw}
     .quote,.quote:nth-child(even){grid-template-columns:1fr;gap:1.5rem}.quote:nth-child(even) .quote-meta,.quote:nth-child(even) blockquote{grid-column:auto;grid-row:auto;text-align:left}.offering-button,.offering-content-inner{grid-template-columns:.2fr 1fr auto}.offering-content-inner p{grid-column:2/4}.offering-content-inner a{grid-column:2;justify-self:start;margin-top:1.5rem}
   }
   @media(max-width:600px){
     .topbar{height:68px}.brand{font-size:.65rem}.track-toggle button{padding:.55rem .66rem;font-size:.58rem}
     .landing{padding-top:100px}.landing h1{font-size:clamp(3.1rem,14.5vw,5.4rem);letter-spacing:-.065em}.landing-profile{grid-template-columns:1fr;gap:1.25rem;margin-top:.4rem}.landing-profile-photo{justify-self:center;max-width:210px;padding:10px}.landing-summary{font-size:.86rem;max-width:94%;}.landing-signal{width:100vw;max-width:100vw;left:50%;transform:translateX(-50%);height:145px;margin-top:.45rem;margin-bottom:0}.portal-title{font-size:clamp(2.8rem,15vw,4.5rem)}
     .computer-hero,.debate-hero{padding-top:115px}.computer-hero h1,.debate-hero h1{font-size:clamp(4rem,20vw,7rem)}.tech-readout,.debate-issue{display:none}
-    .tech-projects-head{display:block}.tech-projects-head p{text-align:left;margin-top:1.5rem}.tech-project{grid-template-columns:1fr;padding-top:2.3rem;padding-bottom:2.3rem}.tech-num,.project-specs{grid-column:1}.tech-project h3{font-size:2.8rem}
+    .tech-projects-head{display:block}.tech-projects-head p{text-align:left;margin-top:1.5rem}.radar-frame{width:86vmin}.hud-status .brg{display:none}
     .tech-manifesto,.tech-timeline,.testimonials,.offerings,.debate-bio,.debate-record{padding-top:7rem;padding-bottom:7rem}.manifesto-meta{gap:1.5rem}.record-line{grid-template-columns:1fr}.record-stat{padding:1.5rem 0;border-top:1px solid rgba(245,240,232,.15)}
     .quote{padding:3.5rem 0}.quote blockquote{font-size:2rem}.offering-button{grid-template-columns:.2fr 1fr auto}.offering-name{font-size:2rem}.debate-contact{min-height:70vh}
     .computer-side,.debate-side{padding-left:0;border-left:0}.flow-line{width:100vw;right:-35vw;opacity:.18}
@@ -720,53 +894,92 @@
   </section>
 
   <section class="page track-page computer-page" id="computer" hidden>
-    <section class="computer-hero">
-      <div class="tech-glow"></div>
-      <div class="tech-readout"><span>Portfolio / 2026</span><span>38.0293° N — 78.4767° W</span><span>System online</span></div>
-      <div class="code-rain" aria-hidden="true">00110100 11001010 01010101\nSDR::STREAM / ACTIVE\nPACKET 0048 / VERIFIED\nGNU_RADIO // RX_CHAIN\n0x4A 0x12 0xCF 0x88\nSATELLITE_LINK_ESTABLISHED\nBFSK_DEMOD::LOCKED\n00110100 11001010 01010101\nCYBER_PHYSICAL / HARDEN\nUSRP::GAIN = 42.0\nSIGNAL_TO_NOISE +18.4DB\n0x4A 0x12 0xCF 0x88\nKERNEL / BUILD / TEST\nUPLINK STATUS: NOMINAL\n00110100 11001010 01010101\nPAYLOAD AUTH / PASS\nNETWORK EDGE / SECURE\nGNU_RADIO // RX_CHAIN\n0x4A 0x12 0xCF 0x88</div>
-      <div class="computer-copy">
-        <div class="tech-status">Under development — check back soon</div>
-        <h1>Build.<span>Break.</span>Secure.</h1>
-      </div>
-      <div class="computer-side">
-        <p>Computer engineering at the intersection of embedded systems, radio communications, cybersecurity, and the physical world.</p><div class="computer-development-note">Under development — check back soon.</div>
-        <a class="terminal-link" href="#projects">Inspect selected work</a>
-      </div>
-    </section>
-
-    <section class="tech-manifesto reveal">
-      <p class="big-line">I am interested in systems where software leaves the screen—where code meets <span>signals, hardware, infrastructure, and adversaries.</span></p>
-      <div class="manifesto-meta"><b>Current direction</b><p>My work spans software-defined radio, cyber-physical security, nanosatellite hardening, and experimental communication systems. I care as much about how a system fails as how it functions.</p></div>
-    </section>
-
+    <div class="cursor-aura" id="radarCursorAura"></div>
     <section class="tech-projects" id="projects">
-      <div class="tech-projects-head reveal"><h2>Selected<br>work</h2><p>Scroll through systems<br>not isolated demos</p></div>
-      <article class="tech-project reveal">
-        <span class="tech-num">P—001</span>
-        <div class="tech-project-copy"><h3>Nanosatellite <em>Cyber Hardening</em></h3><p>Threat-modeling and security experimentation for an EyasSat-class nanosatellite environment, using software-defined radio tooling to investigate resilient communication paths and adversarial behavior.</p></div>
-        <div class="project-specs"><span>GNU Radio / USRP</span><span>Satellite systems</span><span>Cyber-physical security</span><span>Research</span></div>
-        <svg class="signal-visual" viewBox="0 0 600 100"><path d="M0 50H90l20-32 28 65 31-50 26 17h90l18-24 34 49 30-37 21 12h212" fill="none" stroke="currentColor" stroke-width="2"/></svg>
-      </article>
-      <article class="tech-project reveal">
-        <span class="tech-num">P—002</span>
-        <div class="tech-project-copy"><h3>Underwater <em>Acoustic Link</em></h3><p>An SDR-based BFSK communication testbed for underwater acoustic signaling. The project connects modulation theory, real-world channel constraints, Python-based experimentation, and hardware validation.</p></div>
-        <div class="project-specs"><span>Python / Linux</span><span>BFSK modulation</span><span>Signal processing</span><span>Experimental testbed</span></div>
-        <svg class="signal-visual" viewBox="0 0 600 100"><path d="M0 50c25-46 50 46 75 0s50 46 75 0 50 46 75 0 50 46 75 0 50 46 75 0 50 46 75 0 50 46 75 0 50 46 75 0" fill="none" stroke="currentColor" stroke-width="2"/></svg>
-      </article>
-      <article class="tech-project reveal">
-        <span class="tech-num">P—003</span>
-        <div class="tech-project-copy"><h3>NASA <em>Micro‑G NeXT</em></h3><p>Engineering experience shaped by iterative prototyping, test discipline, and design under physical constraints—an early foundation for how I approach ambitious technical systems today.</p></div>
-        <div class="project-specs"><span>Mechanical prototyping</span><span>Design iteration</span><span>Team engineering</span><span>Validation</span></div>
-        <svg class="signal-visual" viewBox="0 0 600 100"><path d="M0 80L65 62l55 7 55-42 62 18 70-35 49 45 76-21 58 28 110-5" fill="none" stroke="currentColor" stroke-width="2"/></svg>
-      </article>
-    </section>
+      <div class="tech-projects-head reveal"><h1>Selected<br>work</h1><p>Sweep pings known systems<br>click a contact to lock</p></div>
 
-    <section class="tech-timeline">
-      <h2 class="reveal">Background<br>& trajectory</h2>
-      <div class="timeline-stream">
-        <article class="timeline-item reveal"><time>Virginia Tech</time><h3>Computer Engineering</h3><p>Building depth across computer architecture, embedded systems, networking, signal processing, and cybersecurity.</p></article>
-        <article class="timeline-item reveal"><time>Research</time><h3>Signals under pressure</h3><p>Developing research systems that treat noisy channels, physical devices, and adversarial conditions as first-class engineering constraints.</p></article>
-        <article class="timeline-item reveal"><time>Public service</time><h3>Cyber mission focus</h3><p>A DoD Cyber Scholarship Program scholar with an interest in applying engineering work to high-consequence national security systems.</p></article>
+      <div class="radar-field reveal">
+        <div class="radar-ambient-glow"></div>
+        <div class="hud-status">
+          <span class="dot"></span>
+          <span id="radarStatusText">System · Scanning</span>
+          <span class="brg">Bearing <b id="radarBearingReadout">000°</b></span>
+        </div>
+
+        <div class="radar-wrap">
+          <div class="radar-frame">
+            <span class="corner corner-tl"></span>
+            <span class="corner corner-tr"></span>
+            <span class="corner corner-bl"></span>
+            <span class="corner corner-br"></span>
+
+            <div class="radar-stage">
+              <svg class="radar-rings" viewBox="0 0 600 600">
+                <defs>
+                  <filter id="radarGrain" x="-20%" y="-20%" width="140%" height="140%">
+                    <feTurbulence type="fractalNoise" baseFrequency="0.35" numOctaves="3" seed="7" result="speckle">
+                      <animate attributeName="baseFrequency" values="0.35;0.39;0.32;0.35" dur="9s" repeatCount="indefinite"/>
+                    </feTurbulence>
+                    <feColorMatrix in="speckle" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  1.1 0 0 0 -0.15" result="speckleAlpha"/>
+                    <feComposite in="speckleAlpha" in2="SourceGraphic" operator="in" result="grainOnStroke"/>
+                    <feMerge>
+                      <feMergeNode in="SourceGraphic"/>
+                      <feMergeNode in="grainOnStroke"/>
+                    </feMerge>
+                  </filter>
+                </defs>
+                <circle class="outer" cx="300" cy="300" r="240"/>
+                <circle cx="300" cy="300" r="180"/>
+                <circle cx="300" cy="300" r="120"/>
+                <circle cx="300" cy="300" r="60"/>
+                <line x1="300" y1="60" x2="300" y2="540"/>
+                <line x1="60" y1="300" x2="540" y2="300"/>
+                <g id="radarSpokes"></g>
+                <g id="radarTicks"></g>
+                <text x="300" y="42" text-anchor="middle">000</text>
+                <text x="558" y="305" text-anchor="start">090</text>
+                <text x="300" y="568" text-anchor="middle">180</text>
+                <text x="42" y="305" text-anchor="end">270</text>
+              </svg>
+
+              <div class="radar-sweep"></div>
+
+              <svg class="lock-line" viewBox="0 0 600 600">
+                <path id="radarLockPath" pathLength="1" d="M300 300 L300 300"/>
+              </svg>
+
+              <div class="radar-center"></div>
+
+              <div class="blip" data-bearing="55" data-radius="190" style="left:75.94%;top:31.84%">
+                <div class="blip-dot"></div>
+                <div class="blip-label">P—001 · Nanosatellite Cyber Hardening</div>
+              </div>
+              <div class="blip" data-side="left" data-bearing="205" data-radius="130" style="left:40.84%;top:69.64%">
+                <div class="blip-dot"></div>
+                <div class="blip-label">P—002 · Underwater Acoustic Link</div>
+              </div>
+              <div class="blip" data-side="left" data-bearing="320" data-radius="70" style="left:42.5%;top:41.06%">
+                <div class="blip-dot"></div>
+                <div class="blip-label">P—003 · Spacesuit Cooling System</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <p class="hint"><b>Sweep active</b> — targets ping on contact · click a contact to lock and read the full write-up</p>
+      </div>
+
+      <div class="radar-scrim" id="radarScrim"></div>
+      <aside class="panel" id="radarPanel">
+        <div id="radarPanelTerm"></div>
+        <button class="panel-close" id="radarPanelClose">Resume scan</button>
+      </aside>
+
+      <div class="lightbox" id="radarLightbox">
+        <div class="lightbox-inner">
+          <img id="radarLightboxImg" src="" alt="">
+          <div class="lightbox-caption" id="radarLightboxCaption"></div>
+        </div>
       </div>
     </section>
 
@@ -1023,6 +1236,7 @@
   const curtain = document.querySelector('.switch-curtain');
   const curtainLabel = curtain.querySelector('span');
   const modeButtons = [...document.querySelectorAll('[data-mode-select]')];
+  const homeButton = document.getElementById('homeButton');
   let switching = false;
 
   function updateButtons(mode){
@@ -1087,6 +1301,8 @@
     setTimeout(apply,560);
     setTimeout(() => { body.classList.remove('locked','switching'); switching = false; },1320);
   }
+
+  if(homeButton) homeButton.addEventListener('click', () => showLanding());
 
   document.querySelectorAll('[data-name-enter]').forEach(namePart => {
     const mode = namePart.dataset.nameEnter;
@@ -1274,6 +1490,237 @@
     const max = document.documentElement.scrollHeight - innerHeight;
     progress.style.width = max > 0 ? `${(scrollY/max)*100}%` : '0%';
   },{passive:true});
+})();
+</script>
+
+<script>
+(() => {
+  const projects = [
+    {
+      num:'P—001', bearing:55, radius:190,
+      title:'Nanosatellite <em>Cyber Hardening</em>',
+      desc:'Built a Python/Linux SDR testbed using GNU Radio to analyze and manipulate Zigbee RF traffic for nanosatellite cybersecurity testing.',
+      sections:[
+        {label:'SETUP', text:'Sniffing and injection are done by a Universal Software Radio Peripheral interfacing with an open-source 802.15.4 GNU Radio transceiver on Ubuntu 22. Captured packets are piped to Wireshark. Scapy re-packages captured frames and sends them to the USRP for transmission over a local UDP socket.'},
+        {label:'RECON', text:'Xbee operates in the 2.4 GHz band across 16 possible channels. Generating a spectrogram of the Rx interface isolates which channel comms are on. The USRP is then tuned to that frequency and begins sniffing packets, viewable in Wireshark through a Zigbee profile that formats the packet info.'},
+        {label:'INJECTION', text:'Scapy repackages the packet of interest into byte form and sends it to a UDP port specified by GRC. GNU Radio modulates the packet at the target communication frequency, and the USRP injects it into the network.'}
+      ],
+      specs:['Python / Linux','GNU Radio / USRP','Zigbee (802.15.4)','Scapy packet injection'],
+      attachments:[
+        {type:'image', src:'assets/projects/p1-wireshark.png', caption:'Sniffed Zigbee frame, decoded in Wireshark'},
+        {type:'image', src:'assets/projects/p1-setup.png', caption:'Ground station / EyesSat RF test setup'}
+      ]
+    },
+    {
+      num:'P—002', bearing:205, radius:130,
+      title:'Underwater <em>Acoustic Link</em>',
+      desc:'An SDR-based BFSK communication testbed for underwater acoustic signaling. The project connects modulation theory, real-world channel constraints, Python-based experimentation, and hardware validation.',
+      specs:['Python / Linux','BFSK modulation','Signal processing','Experimental testbed']
+    },
+    {
+      num:'P—003', bearing:320, radius:70,
+      title:'Spacesuit <em>Cooling System</em>',
+      role:'Electronics Chair',
+      desc:'Designed ACCESS (Aqueous Cooling Compressed Electric Spacesuit System), a compact spacesuit cooling system for astronaut training in the Neutral Buoyancy Lab; final testing conducted at the NBL and Johnson Space Center.',
+      sections:[
+        {label:'FUNDING', text:'Secured $3,000 in funding for device assembly, educational outreach, and travel for project testing.'},
+        {label:'ELECTRONICS', text:'Designed and built the internal electronics system, including diver-operated variable temperature control, an emergency shut-off thermistor, and full power distribution.'}
+      ],
+      specs:['Mechanical prototyping','Electronics design','Thermal systems','NBL / JSC testing'],
+      attachments:[
+        {type:'image', src:'assets/projects/p3-cad.png', caption:'ACCESS CAD model'},
+        {type:'image', src:'assets/projects/p3-nbl-test.jpg', caption:'Underwater test at the Neutral Buoyancy Lab'},
+        {type:'pdf', src:'assets/projects/p3-report.pdf', caption:'Final technical report (PDF)'}
+      ]
+    }
+  ];
+
+  const spokesG = document.getElementById('radarSpokes');
+  const ticksG = document.getElementById('radarTicks');
+  if(!spokesG || !ticksG) return;
+  const cx = 300, cy = 300;
+
+  for(let a = 0; a < 360; a += 30){
+    const r = a * Math.PI / 180;
+    spokesG.insertAdjacentHTML('beforeend', `<line x1="${cx}" y1="${cy}" x2="${cx + 240 * Math.sin(r)}" y2="${cy - 240 * Math.cos(r)}"/>`);
+  }
+  for(let a = 0; a < 360; a += 15){
+    const r = a * Math.PI / 180;
+    const major = a % 90 === 0;
+    const rInner = major ? 224 : 232;
+    ticksG.insertAdjacentHTML('beforeend', `<line class="tick${major ? ' major' : ''}" x1="${cx + rInner * Math.sin(r)}" y1="${cy - rInner * Math.cos(r)}" x2="${cx + 240 * Math.sin(r)}" y2="${cy - 240 * Math.cos(r)}"/>`);
+  }
+
+  const body = document.body;
+  const blips = [...document.querySelectorAll('.blip')];
+  const bearingReadout = document.getElementById('radarBearingReadout');
+  const statusText = document.getElementById('radarStatusText');
+  const lockPath = document.getElementById('radarLockPath');
+  const panel = document.getElementById('radarPanel');
+  const panelTerm = document.getElementById('radarPanelTerm');
+  const panelClose = document.getElementById('radarPanelClose');
+  let termTimers = [];
+
+  const SWEEP_MS = 9000;
+  const PING_HALF_WIDTH = 9;
+  const start = performance.now();
+  let locked = false;
+
+  // Bearing 0deg is due "north" (12 o'clock) increasing clockwise, matching
+  // the conic-gradient's default direction so the visual sweep and the
+  // ping math always agree on where the beam actually is.
+  function angleDiff(a, b){
+    const d = Math.abs(a - b) % 360;
+    return d > 180 ? 360 - d : d;
+  }
+
+  function tick(now){
+    if(!locked){
+      const elapsed = (now - start) % SWEEP_MS;
+      const angle = (elapsed / SWEEP_MS) * 360;
+      bearingReadout.textContent = String(Math.round(angle)).padStart(3,'0') + '°';
+
+      blips.forEach(blip => {
+        const bearing = Number(blip.dataset.bearing);
+        const within = angleDiff(angle, bearing) < PING_HALF_WIDTH;
+        if(within && blip.dataset.armed !== 'false'){
+          blip.classList.add('pinged');
+          blip.dataset.armed = 'false';
+          clearTimeout(blip._pingTimer);
+          blip._pingTimer = setTimeout(() => blip.classList.remove('pinged'), 2200);
+        } else if(!within){
+          blip.dataset.armed = 'true';
+        }
+      });
+    }
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+
+  function buildTermLines(project){
+    const slug = project.num.replace('P—','project_') + '.log';
+    const lines = [
+      { cls:'prompt', html:'guest@sullymrkva:~$ <b>cat ' + slug + '</b>' },
+      { cls:'kv', html:'<b>ID</b><em>' + project.num + '</em>' },
+      { cls:'kv', html:'<b>NAME</b><em>' + project.title.replace(/<\/?em>/g,'') + '</em>' }
+    ];
+    if(project.role) lines.push({ cls:'kv', html:'<b>ROLE</b><em>' + project.role + '</em>' });
+    lines.push({ cls:'blank' });
+    lines.push({ cls:'desc', html:project.desc });
+    (project.sections || []).forEach(sec => {
+      lines.push({ cls:'blank' });
+      lines.push({ cls:'label', html:sec.label });
+      lines.push({ cls:'desc', html:sec.text });
+    });
+    lines.push({ cls:'blank' });
+    lines.push({ cls:'label', html:'SPECS' });
+    project.specs.forEach(s => lines.push({ cls:'spec', html:'&gt; ' + s }));
+    if(project.attachments && project.attachments.length){
+      lines.push({ cls:'blank' });
+      lines.push({ cls:'label', html:'CAPTURES' });
+      lines.push({ cls:'attachments', attachments:project.attachments });
+    }
+    lines.push({ cls:'ready', html:'guest@sullymrkva:~$ <span class="term-cursor"></span>' });
+    return lines;
+  }
+
+  function clearTermTimers(){
+    termTimers.forEach(clearTimeout);
+    termTimers = [];
+  }
+
+  function runTerminal(project){
+    clearTermTimers();
+    panelTerm.innerHTML = '';
+    panelTerm.scrollTop = 0;
+    panelClose.classList.remove('visible');
+
+    const lines = buildTermLines(project);
+    lines.forEach(line => {
+      const el = document.createElement('div');
+      el.className = 'term-line' + (line.cls ? ' ' + line.cls : '');
+      if(line.cls === 'attachments'){
+        line.attachments.forEach(att => {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'term-thumb';
+          if(att.type === 'pdf'){
+            btn.innerHTML = `<span class="term-thumb-pdf">PDF</span><span>${att.caption}</span>`;
+            btn.addEventListener('click', () => window.open(att.src, '_blank', 'noopener'));
+          } else {
+            btn.innerHTML = `<img src="${att.src}" alt="${att.caption}" loading="lazy"><span>${att.caption}</span>`;
+            btn.addEventListener('click', () => openLightbox(att));
+          }
+          el.appendChild(btn);
+        });
+      } else if(line.html){
+        el.innerHTML = line.html;
+      }
+      panelTerm.appendChild(el);
+    });
+
+    const lineEls = [...panelTerm.children];
+    lineEls.forEach((el, i) => {
+      const delay = lines[i].cls === 'blank' ? 60 : 120;
+      termTimers.push(setTimeout(() => el.classList.add('visible'), i === 0 ? 0 : delay * i));
+    });
+    termTimers.push(setTimeout(() => panelClose.classList.add('visible'), (lineEls.length + 1) * 120));
+  }
+
+  function openPanel(blip, project){
+    blips.forEach(b => b.classList.remove('selected'));
+    blip.classList.add('selected');
+
+    const r = Number(blip.dataset.radius);
+    const a = Number(blip.dataset.bearing) * Math.PI / 180;
+    const x = cx + r * Math.sin(a);
+    const y = cy - r * Math.cos(a);
+    lockPath.setAttribute('d', `M${cx} ${cy} L${x} ${y}`);
+
+    runTerminal(project);
+
+    statusText.textContent = 'System · Locked';
+    locked = true;
+    body.classList.add('radar-locked');
+  }
+
+  function closePanel(){
+    locked = false;
+    body.classList.remove('radar-locked');
+    statusText.textContent = 'System · Scanning';
+    blips.forEach(b => b.classList.remove('selected'));
+    clearTermTimers();
+  }
+
+  blips.forEach((blip, i) => {
+    blip.addEventListener('click', () => openPanel(blip, projects[i]));
+  });
+  panelClose.addEventListener('click', closePanel);
+  document.getElementById('radarScrim').addEventListener('click', closePanel);
+
+  const lightbox = document.getElementById('radarLightbox');
+  const lightboxImg = document.getElementById('radarLightboxImg');
+  const lightboxCaption = document.getElementById('radarLightboxCaption');
+  function openLightbox(img){
+    lightboxImg.src = img.src;
+    lightboxImg.alt = img.caption;
+    lightboxCaption.textContent = img.caption;
+    lightbox.classList.add('active');
+  }
+  function closeLightbox(){ lightbox.classList.remove('active'); }
+  lightbox.addEventListener('click', closeLightbox);
+  lightbox.querySelector('.lightbox-inner').addEventListener('click', e => e.stopPropagation());
+  window.addEventListener('keydown', e => { if(e.key === 'Escape') closeLightbox(); });
+
+  const cursorAura = document.getElementById('radarCursorAura');
+  let auraIdleTimer = null;
+  window.addEventListener('mousemove', e => {
+    cursorAura.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`;
+    cursorAura.classList.add('active');
+    clearTimeout(auraIdleTimer);
+    auraIdleTimer = setTimeout(() => cursorAura.classList.remove('active'), 300);
+  });
+  window.addEventListener('mouseleave', () => cursorAura.classList.remove('active'));
 })();
 </script>
 </body>
