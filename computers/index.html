@@ -316,10 +316,10 @@
   .manifesto-meta b{color:var(--tech-green);font:500 .72rem/1 var(--mono);letter-spacing:.12em;text-transform:uppercase}
 
   .tech-projects{padding:150px 0 6rem}
-  .tech-projects-head{padding:0 4vw 4rem;display:flex;justify-content:space-between;align-items:end}
+  .tech-projects-head{position:relative;z-index:3;padding:0 4vw;display:block;pointer-events:none}
   .tech-projects-head h1{margin:0;font:700 clamp(3rem,6vw,6rem)/.9 var(--sans);letter-spacing:-.06em;text-transform:uppercase}
-  .tech-projects-head p{margin:0;color:var(--tech-muted);font:400 .72rem/1.4 var(--mono);text-transform:uppercase;letter-spacing:.12em;text-align:right}
-  .radar-field{position:relative;padding:1rem 4vw 3rem;display:flex;flex-direction:column}
+  .tech-projects-head p{max-width:420px;margin:1.5rem 0 0;color:var(--tech-muted);font:400 .72rem/1.55 var(--mono);text-transform:uppercase;letter-spacing:.12em;text-align:left}
+  .radar-field{position:relative;margin-top:var(--radar-offset,0);padding:1rem 4vw 3rem;display:flex;flex-direction:column}
   .radar-field::before{
     content:"";position:absolute;inset:0;z-index:0;pointer-events:none;
     background-image:
@@ -335,11 +335,6 @@
     border-radius:50%;filter:blur(8px);
     background:radial-gradient(circle,rgba(111,147,168,.18),rgba(126,203,86,.09) 35%,transparent 70%);
   }
-
-  .hud-status{position:relative;z-index:2;display:flex;align-items:center;gap:.7rem;margin-bottom:1.4rem;color:var(--radar-green);font:500 .7rem/1 var(--mono);letter-spacing:.14em;text-transform:uppercase}
-  .hud-status .dot{width:6px;height:6px;border-radius:50%;background:var(--radar-green);box-shadow:0 0 6px rgba(126,203,86,.7);animation:blip-breathe 2.4s ease-in-out infinite}
-  .hud-status .brg{margin-left:auto;color:var(--tech-muted)}
-  .hud-status .brg b{color:var(--radar-green);font-weight:500}
 
   .radar-wrap{position:relative;z-index:2;display:flex;justify-content:center;margin-top:1rem}
   .radar-frame{position:relative;width:min(88vmin,860px);aspect-ratio:1}
@@ -369,23 +364,6 @@
     85%{opacity:1}
   }
 
-  .radar-sweep{
-    position:absolute;inset:0;border-radius:50%;overflow:hidden;
-    animation:sweep-spin 9s linear infinite;
-    mix-blend-mode:screen;
-  }
-  .radar-sweep::before{
-    content:"";position:absolute;inset:0;border-radius:50%;
-    background:conic-gradient(from 0deg,
-      rgba(126,203,86,0) 0deg,
-      rgba(126,203,86,0) 300deg,
-      rgba(126,203,86,.25) 344deg,
-      rgba(126,203,86,.8) 359deg,
-      rgba(126,203,86,0) 360deg);
-  }
-  body.radar-locked .radar-sweep{animation-play-state:paused}
-  @keyframes sweep-spin{to{transform:rotate(360deg)}}
-
   .radar-center{position:absolute;left:50%;top:50%;width:8px;height:8px;margin:-4px;border-radius:50%;background:var(--radar-green);box-shadow:0 0 8px rgba(126,203,86,.7);z-index:3}
 
   .lock-line{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:2}
@@ -393,9 +371,9 @@
   body.radar-locked .lock-line path{stroke-dashoffset:0;opacity:.85}
 
   .blip{position:absolute;transform:translate(-50%,-50%);z-index:4}
-  .blip-dot{position:relative;width:21px;height:21px;border-radius:50%;background:var(--radar-green);cursor:pointer;box-shadow:0 0 0 rgba(126,203,86,.5);animation:blip-pulse 2.2s ease-in-out infinite}
+  .blip-dot{position:relative;width:21px;height:21px;padding:0;border-radius:50%;background:var(--radar-green);cursor:pointer;touch-action:manipulation;box-shadow:0 0 0 rgba(126,203,86,.5);animation:blip-pulse 2.2s ease-in-out infinite}
   .blip-dot::before{
-    content:"";position:absolute;inset:-8px;border-radius:50%;border:1px solid var(--radar-green-dim);
+    content:"";position:absolute;inset:-12px;border-radius:50%;border:1px solid var(--radar-green-dim);
     opacity:0;transform:scale(.4);
   }
   .blip-dot::after{content:"";position:absolute;inset:0;border-radius:50%;box-shadow:0 0 10px rgba(126,203,86,.8);animation:blip-breathe 2.2s ease-in-out infinite}
@@ -403,12 +381,6 @@
   @keyframes blip-pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.18)}}
 
   .blip:hover .blip-dot{animation-play-state:paused;transform:scale(1.25)}
-
-  .blip.pinged .blip-dot::before{animation:ping-ring .9s var(--ease)}
-  @keyframes ping-ring{
-    0%{opacity:.9;transform:scale(.4)}
-    100%{opacity:0;transform:scale(2.6)}
-  }
 
   .blip-label{
     position:absolute;left:24px;top:50%;transform:translateY(-50%) translateX(-4px);
@@ -418,7 +390,7 @@
     opacity:0;pointer-events:none;transition:opacity .35s var(--ease),transform .35s var(--ease);
   }
   .blip[data-side="left"] .blip-label{left:auto;right:24px;transform:translateY(-50%) translateX(4px)}
-  .blip.pinged .blip-label,.blip.selected .blip-label,.blip:hover .blip-label{opacity:1;transform:translateY(-50%) translateX(0);pointer-events:auto}
+  .blip.selected .blip-label,.blip:hover .blip-label{opacity:1;transform:translateY(-50%) translateX(0);pointer-events:auto}
   .blip.selected .blip-dot{background:var(--tech-white)}
   .blip.selected .blip-dot::after{animation:none;box-shadow:0 0 14px rgba(238,246,255,.9)}
   .blip.selected .blip-label{border-color:var(--tech-white);color:var(--tech-white)}
@@ -430,9 +402,6 @@
     opacity:0;transition:opacity .4s ease;will-change:transform;
   }
   .cursor-aura.active{opacity:1}
-
-  .hint{position:relative;z-index:2;margin-top:1.6rem;text-align:center;color:var(--tech-muted);font:400 .68rem/1.4 var(--mono);letter-spacing:.1em;text-transform:uppercase}
-  .hint b{color:var(--radar-green);font-weight:500}
 
   .panel{
     position:fixed;top:0;right:0;height:100%;width:min(460px,92vw);z-index:20;
@@ -502,7 +471,8 @@
   .panel-close::before{content:">";color:var(--radar-green)}
 
   .radar-scrim{position:fixed;inset:0;z-index:19;background:rgba(6,8,13,.5);opacity:0;pointer-events:none;transition:opacity .5s var(--ease)}
-  body.radar-locked .radar-scrim{opacity:1;pointer-events:auto}
+  body.radar-locked .radar-scrim{opacity:1}
+  body.radar-locked.radar-scrim-ready .radar-scrim{pointer-events:auto}
 
   .tech-timeline{padding:10rem 4vw;display:grid;grid-template-columns:.58fr 1.2fr;gap:8vw}
   .tech-timeline h2{position:sticky;top:130px;align-self:start;margin:0;font:600 clamp(3rem,6vw,6rem)/.9 var(--sans);letter-spacing:-.06em;text-transform:uppercase}
@@ -791,7 +761,7 @@
     .topbar{height:68px}.brand{font-size:.65rem}.track-toggle button{padding:.55rem .66rem;font-size:.58rem}
     .landing{padding-top:100px}.landing h1{font-size:clamp(3.1rem,14.5vw,5.4rem);letter-spacing:-.065em}.landing-profile{grid-template-columns:1fr;gap:1.25rem;margin-top:.4rem}.landing-profile-photo{justify-self:center;max-width:210px;padding:10px}.landing-summary{font-size:.86rem;max-width:94%;}.landing-signal{width:100vw;max-width:100vw;left:50%;transform:translateX(-50%);height:145px;margin-top:.45rem;margin-bottom:0}.portal-title{font-size:clamp(2.8rem,15vw,4.5rem)}
     .computer-hero,.debate-hero{padding-top:115px}.computer-hero h1,.debate-hero h1{font-size:clamp(4rem,20vw,7rem)}.tech-readout,.debate-issue{display:none}
-    .tech-projects-head{display:block}.tech-projects-head p{text-align:left;margin-top:1.5rem}.radar-frame{width:86vmin}.hud-status .brg{display:none}
+    .tech-projects-head{display:block}.tech-projects-head p{text-align:left;margin-top:1.5rem}.radar-field{--radar-offset:0px!important;margin-top:0}.radar-frame{width:86vmin}
     .tech-manifesto,.tech-timeline,.testimonials,.offerings,.debate-bio,.debate-record{padding-top:7rem;padding-bottom:7rem}.manifesto-meta{gap:1.5rem}.record-line{grid-template-columns:1fr}.record-stat{padding:1.5rem 0;border-top:1px solid rgba(245,240,232,.15)}
     .quote{padding:3.5rem 0}.quote blockquote{font-size:2rem}.offering-button{grid-template-columns:.2fr 1fr auto}.offering-name{font-size:2rem}.debate-contact{min-height:70vh}
     .computer-side,.debate-side{padding-left:0;border-left:0}.flow-line{width:100vw;right:-35vw;opacity:.18}
@@ -890,15 +860,13 @@
   <section class="page track-page computer-page" id="computer">
     <div class="cursor-aura" id="radarCursorAura"></div>
     <section class="tech-projects" id="projects">
-      <div class="tech-projects-head reveal"><h1>Selected<br>work</h1><p>Sweep pings known systems<br>click a contact to lock</p></div>
+      <div class="tech-projects-head reveal">
+        <h1 id="selectedWorkHeading">Selected<br>work</h1>
+        <p>Hover over a radar contact to preview a project.<br>Click or tap a contact to open its details.</p>
+      </div>
 
       <div class="radar-field reveal">
         <div class="radar-ambient-glow"></div>
-        <div class="hud-status">
-          <span class="dot"></span>
-          <span id="radarStatusText">System · Scanning</span>
-          <span class="brg">Bearing <b id="radarBearingReadout">000°</b></span>
-        </div>
 
         <div class="radar-wrap">
           <div class="radar-frame">
@@ -936,8 +904,6 @@
                 <text x="42" y="305" text-anchor="end">270</text>
               </svg>
 
-              <div class="radar-sweep"></div>
-
               <svg class="lock-line" viewBox="0 0 600 600">
                 <path id="radarLockPath" pathLength="1" d="M300 300 L300 300"/>
               </svg>
@@ -945,22 +911,21 @@
               <div class="radar-center"></div>
 
               <div class="blip" data-bearing="55" data-radius="190" style="left:75.94%;top:31.84%">
-                <div class="blip-dot"></div>
-                <div class="blip-label">P—001 · Nanosatellite Cyber Hardening</div>
+                <button class="blip-dot" type="button" aria-label="Open Project 1: Nanosatellite Cyber Hardening"></button>
+                <div class="blip-label">Project 1: Nanosatellite Cyber Hardening</div>
               </div>
               <div class="blip" data-side="left" data-bearing="205" data-radius="130" style="left:40.84%;top:69.64%">
-                <div class="blip-dot"></div>
-                <div class="blip-label">P—002 · Underwater Acoustic Link</div>
+                <button class="blip-dot" type="button" aria-label="Open Project 2: Underwater Acoustic Link"></button>
+                <div class="blip-label">Project 2: Underwater Acoustic Link</div>
               </div>
               <div class="blip" data-side="left" data-bearing="320" data-radius="70" style="left:42.5%;top:41.06%">
-                <div class="blip-dot"></div>
-                <div class="blip-label">P—003 · Spacesuit Cooling System</div>
+                <button class="blip-dot" type="button" aria-label="Open Project 3: Spacesuit Cooling System"></button>
+                <div class="blip-label">Project 3: Spacesuit Cooling System</div>
               </div>
             </div>
           </div>
         </div>
 
-        <p class="hint"><b>Sweep active</b> — targets ping on contact · click a contact to lock and read the full write-up</p>
       </div>
 
       <div class="radar-scrim" id="radarScrim"></div>
@@ -984,6 +949,33 @@
       <div class="tech-contact-bottom"><span>Engineering — Research — Collaboration</span><a class="terminal-link" href="mailto:manlybros11@gmail.com">manlybros11@gmail.com</a></div>
     </section>
   </section>
+
+  <script>
+  (() => {
+    const radarField = document.querySelector('.radar-field');
+    const selectedWorkHeading = document.getElementById('selectedWorkHeading');
+    const radarOuterCircle = document.querySelector('.radar-rings .outer');
+    if(!radarField || !selectedWorkHeading || !radarOuterCircle) return;
+
+    function alignRadarWithHeading(){
+      if(window.matchMedia('(max-width: 600px)').matches){
+        radarField.style.removeProperty('--radar-offset');
+        return;
+      }
+      const currentOffset = parseFloat(getComputedStyle(radarField).marginTop) || 0;
+      const headingBottom = selectedWorkHeading.getBoundingClientRect().bottom;
+      const circleTop = radarOuterCircle.getBoundingClientRect().top;
+      radarField.style.setProperty('--radar-offset', `${currentOffset + headingBottom - circleTop}px`);
+    }
+
+    let resizeFrame;
+    window.addEventListener('resize', () => {
+      cancelAnimationFrame(resizeFrame);
+      resizeFrame = requestAnimationFrame(alignRadarWithHeading);
+    });
+    alignRadarWithHeading();
+  })();
+  </script>
 
   <section class="page track-page debate-page" id="debate" hidden>
     <nav class="debate-sticky-actions" aria-label="Debate coaching actions">
@@ -1547,49 +1539,14 @@
 
   const body = document.body;
   const blips = [...document.querySelectorAll('.blip')];
-  const bearingReadout = document.getElementById('radarBearingReadout');
-  const statusText = document.getElementById('radarStatusText');
   const lockPath = document.getElementById('radarLockPath');
   const panel = document.getElementById('radarPanel');
   const panelTerm = document.getElementById('radarPanelTerm');
   const panelClose = document.getElementById('radarPanelClose');
   let termTimers = [];
+  let scrimReadyTimer;
 
-  const SWEEP_MS = 9000;
-  const PING_HALF_WIDTH = 9;
-  const start = performance.now();
   let locked = false;
-
-  // Bearing 0deg is due "north" (12 o'clock) increasing clockwise, matching
-  // the conic-gradient's default direction so the visual sweep and the
-  // ping math always agree on where the beam actually is.
-  function angleDiff(a, b){
-    const d = Math.abs(a - b) % 360;
-    return d > 180 ? 360 - d : d;
-  }
-
-  function tick(now){
-    if(!locked){
-      const elapsed = (now - start) % SWEEP_MS;
-      const angle = (elapsed / SWEEP_MS) * 360;
-      bearingReadout.textContent = String(Math.round(angle)).padStart(3,'0') + '°';
-
-      blips.forEach(blip => {
-        const bearing = Number(blip.dataset.bearing);
-        const within = angleDiff(angle, bearing) < PING_HALF_WIDTH;
-        if(within && blip.dataset.armed !== 'false'){
-          blip.classList.add('pinged');
-          blip.dataset.armed = 'false';
-          clearTimeout(blip._pingTimer);
-          blip._pingTimer = setTimeout(() => blip.classList.remove('pinged'), 2200);
-        } else if(!within){
-          blip.dataset.armed = 'true';
-        }
-      });
-    }
-    requestAnimationFrame(tick);
-  }
-  requestAnimationFrame(tick);
 
   function buildTermLines(project){
     const slug = project.num.replace('P—','project_') + '.log';
@@ -1673,21 +1630,28 @@
 
     runTerminal(project);
 
-    statusText.textContent = 'System · Locked';
     locked = true;
+    clearTimeout(scrimReadyTimer);
+    body.classList.remove('radar-scrim-ready');
     body.classList.add('radar-locked');
+    scrimReadyTimer = setTimeout(() => {
+      if(locked) body.classList.add('radar-scrim-ready');
+    }, 520);
   }
 
   function closePanel(){
     locked = false;
-    body.classList.remove('radar-locked');
-    statusText.textContent = 'System · Scanning';
+    clearTimeout(scrimReadyTimer);
+    body.classList.remove('radar-locked','radar-scrim-ready');
     blips.forEach(b => b.classList.remove('selected'));
     clearTermTimers();
   }
 
   blips.forEach((blip, i) => {
-    blip.addEventListener('click', () => openPanel(blip, projects[i]));
+    blip.addEventListener('click', event => {
+      event.stopPropagation();
+      openPanel(blip, projects[i]);
+    });
   });
   panelClose.addEventListener('click', closePanel);
   document.getElementById('radarScrim').addEventListener('click', closePanel);
