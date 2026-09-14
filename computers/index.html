@@ -336,6 +336,10 @@
     background:radial-gradient(circle,rgba(111,147,168,.18),rgba(126,203,86,.09) 35%,transparent 70%);
   }
 
+  .hud-status{position:relative;z-index:2;display:flex;justify-content:flex-end;align-items:center;margin-bottom:1.4rem;color:var(--radar-green);font:500 .7rem/1 var(--mono);letter-spacing:.14em;text-transform:uppercase}
+  .hud-status .brg{color:var(--tech-muted)}
+  .hud-status .brg b{color:var(--radar-green);font-weight:500}
+
   .radar-wrap{position:relative;z-index:2;display:flex;justify-content:center;margin-top:1rem}
   .radar-frame{position:relative;width:min(88vmin,860px);aspect-ratio:1}
   .corner{position:absolute;width:22px;height:22px;border:1px solid rgba(238,246,255,.28)}
@@ -364,6 +368,23 @@
     85%{opacity:1}
   }
 
+  .radar-sweep{
+    position:absolute;inset:0;border-radius:50%;overflow:hidden;
+    animation:sweep-spin 9s linear infinite;
+    mix-blend-mode:screen;
+  }
+  .radar-sweep::before{
+    content:"";position:absolute;inset:0;border-radius:50%;
+    background:conic-gradient(from 0deg,
+      rgba(126,203,86,0) 0deg,
+      rgba(126,203,86,0) 300deg,
+      rgba(126,203,86,.25) 344deg,
+      rgba(126,203,86,.8) 359deg,
+      rgba(126,203,86,0) 360deg);
+  }
+  body.radar-locked .radar-sweep{animation-play-state:paused}
+  @keyframes sweep-spin{to{transform:rotate(360deg)}}
+
   .radar-center{position:absolute;left:50%;top:50%;width:8px;height:8px;margin:-4px;border-radius:50%;background:var(--radar-green);box-shadow:0 0 8px rgba(126,203,86,.7);z-index:3}
 
   .lock-line{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:2}
@@ -382,6 +403,12 @@
 
   .blip:hover .blip-dot{animation-play-state:paused;transform:scale(1.25)}
 
+  .blip.pinged .blip-dot::before{animation:ping-ring .9s var(--ease)}
+  @keyframes ping-ring{
+    0%{opacity:.9;transform:scale(.4)}
+    100%{opacity:0;transform:scale(2.6)}
+  }
+
   .blip-label{
     position:absolute;left:24px;top:50%;transform:translateY(-50%) translateX(-4px);
     white-space:nowrap;padding:.6rem .9rem;border:1px solid rgba(126,203,86,.35);
@@ -390,7 +417,7 @@
     opacity:0;pointer-events:none;transition:opacity .35s var(--ease),transform .35s var(--ease);
   }
   .blip[data-side="left"] .blip-label{left:auto;right:24px;transform:translateY(-50%) translateX(4px)}
-  .blip.selected .blip-label,.blip:hover .blip-label{opacity:1;transform:translateY(-50%) translateX(0);pointer-events:auto}
+  .blip.pinged .blip-label,.blip.selected .blip-label,.blip:hover .blip-label{opacity:1;transform:translateY(-50%) translateX(0);pointer-events:auto}
   .blip.selected .blip-dot{background:var(--tech-white)}
   .blip.selected .blip-dot::after{animation:none;box-shadow:0 0 14px rgba(238,246,255,.9)}
   .blip.selected .blip-label{border-color:var(--tech-white);color:var(--tech-white)}
@@ -483,9 +510,6 @@
   .timeline-item time{display:block;margin-bottom:1rem;color:var(--tech-green);font:500 .68rem/1 var(--mono);letter-spacing:.14em;text-transform:uppercase}
   .timeline-item h3{margin:0 0 .8rem;font-size:clamp(1.6rem,2.6vw,2.7rem);letter-spacing:-.035em}
   .timeline-item p{margin:0;max-width:700px;color:var(--tech-muted);line-height:1.72}
-  .tech-stack{overflow:hidden;padding:2rem 0;border-top:1px solid rgba(238,246,255,.15);border-bottom:1px solid rgba(238,246,255,.15);white-space:nowrap}
-  .tech-stack-track{display:inline-flex;gap:4rem;font:500 clamp(2rem,4vw,4rem)/1 var(--mono);text-transform:uppercase;color:rgba(238,246,255,.23);animation:marquee 25s linear infinite}
-  .tech-stack-track b{color:var(--tech-cyan);font-weight:500}
   .tech-contact{padding:12rem 4vw 5rem}
   .tech-contact h2{margin:0;max-width:1100px;font:650 clamp(4rem,9vw,9.6rem)/.78 var(--sans);letter-spacing:-.075em;text-transform:uppercase}
   .tech-contact h2 span{color:var(--tech-green)}
@@ -747,7 +771,6 @@
 
   @keyframes signalTravel{to{stroke-dashoffset:-280}}
   @keyframes pulse{50%{opacity:.32;transform:scale(.72)}}
-  @keyframes marquee{to{transform:translateX(-50%)}}
 
   @media(max-width:900px){
     .topbar{grid-template-columns:1fr auto;padding:0 5vw}.track-toggle{grid-column:2}.top-contact{display:none}
@@ -867,6 +890,9 @@
 
       <div class="radar-field reveal">
         <div class="radar-ambient-glow"></div>
+        <div class="hud-status">
+          <span class="brg">Bearing <b id="radarBearingReadout">000°</b></span>
+        </div>
 
         <div class="radar-wrap">
           <div class="radar-frame">
@@ -903,6 +929,8 @@
                 <text x="300" y="568" text-anchor="middle">180</text>
                 <text x="42" y="305" text-anchor="end">270</text>
               </svg>
+
+              <div class="radar-sweep"></div>
 
               <svg class="lock-line" viewBox="0 0 600 600">
                 <path id="radarLockPath" pathLength="1" d="M300 300 L300 300"/>
@@ -941,8 +969,6 @@
         </div>
       </div>
     </section>
-
-    <div class="tech-stack" aria-hidden="true"><div class="tech-stack-track"><span>Python</span><b>GNU Radio</b><span>Linux</span><b>USRP</b><span>Embedded Systems</span><b>Cybersecurity</b><span>Signal Processing</span><span>Python</span><b>GNU Radio</b><span>Linux</span><b>USRP</b><span>Embedded Systems</span><b>Cybersecurity</b><span>Signal Processing</span></div></div>
 
     <section class="tech-contact">
       <h2 class="reveal">Let’s build something that <span>matters.</span></h2>
@@ -1539,6 +1565,7 @@
 
   const body = document.body;
   const blips = [...document.querySelectorAll('.blip')];
+  const bearingReadout = document.getElementById('radarBearingReadout');
   const lockPath = document.getElementById('radarLockPath');
   const panel = document.getElementById('radarPanel');
   const panelTerm = document.getElementById('radarPanelTerm');
@@ -1546,7 +1573,41 @@
   let termTimers = [];
   let scrimReadyTimer;
 
+  const SWEEP_MS = 9000;
+  const PING_HALF_WIDTH = 9;
+  const start = performance.now();
   let locked = false;
+
+  // Bearing 0deg is due "north" (12 o'clock) increasing clockwise, matching
+  // the conic-gradient's default direction so the visual sweep and the
+  // ping math always agree on where the beam actually is.
+  function angleDiff(a, b){
+    const d = Math.abs(a - b) % 360;
+    return d > 180 ? 360 - d : d;
+  }
+
+  function tick(now){
+    if(!locked){
+      const elapsed = (now - start) % SWEEP_MS;
+      const angle = (elapsed / SWEEP_MS) * 360;
+      bearingReadout.textContent = String(Math.round(angle)).padStart(3,'0') + '°';
+
+      blips.forEach(blip => {
+        const bearing = Number(blip.dataset.bearing);
+        const within = angleDiff(angle, bearing) < PING_HALF_WIDTH;
+        if(within && blip.dataset.armed !== 'false'){
+          blip.classList.add('pinged');
+          blip.dataset.armed = 'false';
+          clearTimeout(blip._pingTimer);
+          blip._pingTimer = setTimeout(() => blip.classList.remove('pinged'), 2200);
+        } else if(!within){
+          blip.dataset.armed = 'true';
+        }
+      });
+    }
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
 
   function buildTermLines(project){
     const slug = project.num.replace('P—','project_') + '.log';
