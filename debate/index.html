@@ -378,10 +378,29 @@
   .manifesto-meta b{color:var(--tech-green);font:500 .72rem/1 var(--mono);letter-spacing:.12em;text-transform:uppercase}
 
   .tech-projects{padding:150px 0 6rem}
-  .tech-projects-head{padding:0 4vw 4rem;display:flex;justify-content:space-between;align-items:end}
-  .tech-projects-head h1{margin:0;font:700 clamp(3rem,6vw,6rem)/.9 var(--sans);letter-spacing:-.06em;text-transform:uppercase}
-  .tech-projects-head p{margin:0;color:var(--tech-muted);font:400 .72rem/1.4 var(--mono);text-transform:uppercase;letter-spacing:.12em;text-align:right}
-  .radar-field{position:relative;padding:1rem 4vw 3rem;display:flex;flex-direction:column}
+  .tech-projects-head{position:relative;z-index:3;padding:0 4vw;display:block;pointer-events:none}
+  .tech-projects-head h1{position:relative;margin:0;font:700 clamp(3rem,6vw,6rem)/.9 var(--sans);letter-spacing:-.06em;text-transform:uppercase;text-shadow:0 0 22px rgba(126,203,86,.16);animation:head-flicker 7.3s steps(1,end) infinite}
+  .tech-projects-head h1::before,.tech-projects-head h1::after{content:attr(data-text);position:absolute;inset:0;white-space:pre-line;pointer-events:none;opacity:0}
+  .tech-projects-head h1::before{color:var(--radar-green);animation:head-glitch-a 5.2s steps(1,end) infinite}
+  .tech-projects-head h1::after{color:#9fdcff;animation:head-glitch-b 5.2s steps(1,end) infinite}
+  @keyframes head-flicker{0%,100%{opacity:1}41%{opacity:.6}42%{opacity:1}43.5%{opacity:.78}44%{opacity:1}88%{opacity:.85}89%{opacity:1}}
+  @keyframes head-glitch-a{
+    0%,85%,100%{opacity:0;transform:none;clip-path:inset(0 0 100% 0)}
+    86%{opacity:.9;transform:translateX(-5px);clip-path:inset(10% 0 72% 0)}
+    88%{opacity:.85;transform:translateX(4px);clip-path:inset(56% 0 26% 0)}
+    90%{opacity:.75;transform:translateX(-2px);clip-path:inset(31% 0 52% 0)}
+    92%{opacity:0}
+    95%{opacity:.7;transform:translateX(6px);clip-path:inset(80% 0 4% 0)}
+    96%{opacity:0}
+  }
+  @keyframes head-glitch-b{
+    0%,86%,100%{opacity:0;transform:none;clip-path:inset(0 0 100% 0)}
+    87%{opacity:.7;transform:translateX(5px);clip-path:inset(62% 0 18% 0)}
+    89%{opacity:.6;transform:translateX(-4px);clip-path:inset(18% 0 66% 0)}
+    91%{opacity:0}
+  }
+  .tech-projects-head p{max-width:300px;margin:1.6rem 0 0;color:#b9c6d4;font:400 clamp(1rem,1.25vw,1.15rem)/1.5 var(--mono);letter-spacing:.01em;text-align:left}
+  .radar-field{position:relative;margin-top:var(--radar-offset,0);padding:1rem 4vw 3rem;display:flex;flex-direction:column}
   .radar-field::before{
     content:"";position:absolute;inset:0;z-index:0;pointer-events:none;
     background-image:
@@ -398,9 +417,8 @@
     background:radial-gradient(circle,rgba(111,147,168,.18),rgba(126,203,86,.09) 35%,transparent 70%);
   }
 
-  .hud-status{position:relative;z-index:2;display:flex;align-items:center;gap:.7rem;margin-bottom:1.4rem;color:var(--radar-green);font:500 .7rem/1 var(--mono);letter-spacing:.14em;text-transform:uppercase}
-  .hud-status .dot{width:6px;height:6px;border-radius:50%;background:var(--radar-green);box-shadow:0 0 6px rgba(126,203,86,.7);animation:blip-breathe 2.4s ease-in-out infinite}
-  .hud-status .brg{margin-left:auto;color:var(--tech-muted)}
+  .hud-status{position:relative;z-index:2;display:flex;justify-content:flex-end;align-items:center;margin-bottom:1.4rem;color:var(--radar-green);font:500 .7rem/1 var(--mono);letter-spacing:.14em;text-transform:uppercase}
+  .hud-status .brg{color:var(--tech-muted)}
   .hud-status .brg b{color:var(--radar-green);font-weight:500}
 
   .radar-wrap{position:relative;z-index:2;display:flex;justify-content:center;margin-top:1rem}
@@ -455,9 +473,9 @@
   body.radar-locked .lock-line path{stroke-dashoffset:0;opacity:.85}
 
   .blip{position:absolute;transform:translate(-50%,-50%);z-index:4}
-  .blip-dot{position:relative;width:21px;height:21px;border-radius:50%;background:var(--radar-green);cursor:pointer;box-shadow:0 0 0 rgba(126,203,86,.5);animation:blip-pulse 2.2s ease-in-out infinite}
+  .blip-dot{position:relative;width:21px;height:21px;padding:0;border-radius:50%;background:var(--radar-green);cursor:pointer;touch-action:manipulation;box-shadow:0 0 0 rgba(126,203,86,.5);animation:blip-pulse 2.2s ease-in-out infinite}
   .blip-dot::before{
-    content:"";position:absolute;inset:-8px;border-radius:50%;border:1px solid var(--radar-green-dim);
+    content:"";position:absolute;inset:-12px;border-radius:50%;border:1px solid var(--radar-green-dim);
     opacity:0;transform:scale(.4);
   }
   .blip-dot::after{content:"";position:absolute;inset:0;border-radius:50%;box-shadow:0 0 10px rgba(126,203,86,.8);animation:blip-breathe 2.2s ease-in-out infinite}
@@ -493,54 +511,48 @@
   }
   .cursor-aura.active{opacity:1}
 
-  .hint{position:relative;z-index:2;margin-top:1.6rem;text-align:center;color:var(--tech-muted);font:400 .68rem/1.4 var(--mono);letter-spacing:.1em;text-transform:uppercase}
-  .hint b{color:var(--radar-green);font-weight:500}
+  .radar-field.is-locked .radar-wrap{position:absolute;top:var(--wrap-top,0);left:0;right:0;margin-top:0}
+  .radar-field.is-decoded .radar-wrap{visibility:hidden;opacity:0;pointer-events:none}
+  .radar-shards{position:absolute;inset:0;z-index:5;pointer-events:none;overflow:clip}
+  .radar-shard{position:absolute;left:0;top:0;width:100px;height:1.5px;background:var(--radar-green);box-shadow:0 0 6px rgba(126,203,86,.7);opacity:0;will-change:transform,opacity}
 
-  .panel{
-    position:fixed;top:0;right:0;height:100%;width:min(460px,92vw);z-index:20;
-    background:var(--tech-black);border-left:1px solid rgba(126,203,86,.3);
-    box-shadow:-30px 0 60px rgba(0,0,0,.5);isolation:isolate;
-    padding:1.7rem 2.2rem 1.3rem;transform:translateX(100%);transition:transform .5s var(--ease);
-    font-family:var(--mono);display:flex;flex-direction:column;justify-content:flex-start;
+  .dossier{position:relative;z-index:4;width:min(1000px,100%);margin:1rem auto 0;padding-bottom:1rem;color:var(--radar-green);font-family:var(--mono)}
+  .dossier[hidden]{display:none}
+  .dossier.is-pending .d-item,.dossier.is-pending .dossier-rule{opacity:0}
+  .dossier-title{margin:0;overflow:hidden;color:var(--tech-white);font:700 clamp(2.2rem,5.4vw,4.6rem)/.95 var(--sans);letter-spacing:-.05em;text-transform:uppercase;text-shadow:0 0 18px rgba(126,203,86,.18);outline:none}
+  .dossier-title em{font-style:normal;color:var(--radar-green)}
+  .dossier-meta{margin:1.1rem 0 0;color:var(--tech-muted);font:500 .8rem/1.4 var(--mono);letter-spacing:.14em;text-transform:uppercase}
+  .dossier-rule{height:1px;margin-top:2.6rem;background:rgba(126,203,86,.4);transform-origin:left center}
+  .dossier-desc{margin:1.8rem 0 0;max-width:52ch;color:#e6f2df;font:400 clamp(1.15rem,1.6vw,1.4rem)/1.55 var(--sans);letter-spacing:-.005em;text-wrap:pretty}
+  .dossier-row{padding-top:1.5rem}
+  .dossier-label{display:flex;align-items:baseline;gap:.85rem;margin:0 0 .9rem;color:var(--radar-green);font:600 .82rem/1 var(--mono);letter-spacing:.2em;text-shadow:0 0 8px rgba(126,203,86,.45)}
+  .dossier-num{color:var(--tech-white);font-size:1.15rem;letter-spacing:0}
+  .dossier-text{margin:0;max-width:66ch;color:#cfe2c5;font:400 1.0625rem/1.75 var(--sans);letter-spacing:.005em;text-wrap:pretty}
+  .dossier-desc strong,.dossier-text strong{color:var(--tech-white);font-weight:650;background:linear-gradient(transparent 60%,rgba(126,203,86,.3) 60%);padding:0 .1em}
+  .dossier-specs{margin:0;padding:0;list-style:none;display:flex;flex-wrap:wrap;gap:.5rem}
+  .dossier-specs li{padding:.45rem .7rem;border:1px solid rgba(126,203,86,.3);color:var(--radar-green);font:500 .76rem/1 var(--mono)}
+  .dossier-captures{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:.9rem}
+  .dossier-thumb{display:flex;flex-direction:column;gap:.5rem;padding:.45rem;background:none;border:1px solid rgba(126,203,86,.3);color:var(--tech-muted);font:500 .66rem/1.35 var(--mono);text-align:left;cursor:pointer;transition:border-color .2s ease,color .2s ease}
+  .dossier-thumb img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block;filter:saturate(.75) brightness(.88);border:1px solid rgba(126,203,86,.18);transition:filter .2s ease}
+  .dossier-thumb-pdf{width:100%;aspect-ratio:4/3;display:flex;align-items:center;justify-content:center;border:1px dashed rgba(126,203,86,.4);background:rgba(126,203,86,.06);color:var(--radar-green);font:700 .85rem/1 var(--mono);letter-spacing:.1em;text-shadow:0 0 8px rgba(126,203,86,.6)}
+  .dossier-thumb span:not(.dossier-thumb-pdf)::before{content:"⤢ ";color:var(--radar-green)}
+  .dossier-thumb:focus-visible{outline:1px solid var(--radar-green);outline-offset:3px}
+  .dossier-close{display:inline-flex;align-items:center;gap:.6rem;margin-top:2.2rem;padding:.7rem 1rem;background:none;border:1px solid rgba(126,203,86,.35);color:var(--tech-white);font:500 .78rem/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;cursor:pointer;transition:border-color .2s ease,color .2s ease}
+  .dossier-close::before{content:">";color:var(--radar-green)}
+  .dossier-links{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:1.2rem}
+  .dossier-link{display:inline-flex;align-items:center;padding:.6rem .95rem;border:1px solid rgba(126,203,86,.45);color:var(--radar-green);font:500 .78rem/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;text-decoration:none;transition:border-color .2s ease,color .2s ease}
+  .dossier-link:focus-visible{outline:1px solid var(--radar-green);outline-offset:3px}
+  @media(hover:hover) and (pointer:fine){.dossier-link:hover{border-color:var(--radar-green);color:var(--tech-white)}}
+  .dossier-close:focus-visible{outline:1px solid var(--radar-green);outline-offset:3px}
+  @media(hover:hover) and (pointer:fine){
+    .dossier-thumb:hover{border-color:var(--radar-green);color:var(--tech-white)}
+    .dossier-thumb:hover img{filter:none}
+    .dossier-close:hover{border-color:var(--radar-green);color:var(--radar-green)}
   }
-  body.radar-locked .panel{transform:translateX(0)}
-  .panel::before{
-    content:"";position:absolute;inset:0;pointer-events:none;
-    background-image:repeating-linear-gradient(to bottom,rgba(126,203,86,.05) 0,rgba(126,203,86,.05) 1px,transparent 1px,transparent 3px);
-    mix-blend-mode:screen;opacity:.5;
+  @media(max-width:600px){
+    .dossier-text{font-size:1rem;line-height:1.7}.dossier-rule{margin-top:2rem}
+    .dossier-captures{grid-template-columns:1fr 1fr;gap:.6rem}
   }
-  #radarPanelTerm{flex:1 1 auto;min-height:0;overflow-y:auto}
-  .term-line{
-    position:relative;margin:0 0 .4rem;color:var(--radar-green);font-weight:500;
-    font-size:clamp(.72rem,1.55vh,.9rem);line-height:1.55;letter-spacing:.015em;
-    white-space:pre-wrap;word-break:break-word;
-    text-shadow:0 0 5px rgba(126,203,86,.55),0 0 16px rgba(126,203,86,.28);
-    opacity:0;transform:translateY(3px);transition:opacity .18s linear,transform .18s linear;
-  }
-  .term-line.visible{opacity:1;transform:translateY(0)}
-  .term-line.blank{height:.5rem;margin:0}
-  .term-line.prompt{color:var(--tech-muted);text-shadow:0 0 4px rgba(138,153,171,.35)}
-  .term-line.prompt b{color:var(--radar-green);font-weight:600;text-shadow:0 0 6px rgba(126,203,86,.6),0 0 16px rgba(126,203,86,.3)}
-  .term-line.kv b{display:inline-block;min-width:3.8em;color:var(--tech-muted);font-weight:500;text-shadow:0 0 4px rgba(138,153,171,.3)}
-  .term-line.kv em{color:var(--tech-white);font-style:normal;font-weight:700;font-size:1.06em;text-shadow:0 0 6px rgba(238,246,255,.55),0 0 18px rgba(126,203,86,.4)}
-  .term-line.desc{color:#a9d98c}
-  .term-line.label{color:var(--tech-white);font-weight:700;font-size:1.2em;letter-spacing:.18em;text-shadow:0 0 8px rgba(126,203,86,.7),0 0 22px rgba(126,203,86,.4)}
-  .term-line.spec{color:var(--radar-green)}
-  .term-line.ready{color:var(--tech-muted)}
-  .term-cursor{display:inline-block;width:.55em;height:1em;background:var(--radar-green);vertical-align:text-bottom;margin-left:.15em;opacity:0;box-shadow:0 0 8px rgba(126,203,86,.9);animation:cursor-blink 1.1s steps(1) infinite}
-
-  .term-line.attachments{display:flex;flex-wrap:wrap;gap:.6rem;margin:.1rem 0 .5rem}
-  .term-thumb{
-    display:flex;flex-direction:column;gap:.4rem;width:calc(50% - .3rem);
-    background:none;border:1px solid rgba(126,203,86,.3);padding:.4rem;cursor:pointer;
-    color:var(--tech-muted);font:500 .6rem/1.3 var(--mono);text-align:left;letter-spacing:.01em;
-    transition:border-color .2s ease,transform .2s ease;
-  }
-  .term-thumb:hover{border-color:var(--radar-green);transform:translateY(-2px)}
-  .term-thumb img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block;filter:saturate(.75) brightness(.88);border:1px solid rgba(126,203,86,.18)}
-  .term-thumb:hover img{filter:none}
-  .term-thumb-pdf{width:100%;aspect-ratio:4/3;display:flex;align-items:center;justify-content:center;border:1px dashed rgba(126,203,86,.4);background:rgba(126,203,86,.06);color:var(--radar-green);font:700 .85rem/1 var(--mono);letter-spacing:.1em;text-shadow:0 0 8px rgba(126,203,86,.6)}
-  .term-thumb span:not(.term-thumb-pdf)::before{content:"⤢ ";color:var(--radar-green)}
 
   .lightbox{
     position:fixed;inset:0;z-index:40;display:flex;align-items:center;justify-content:center;
@@ -552,19 +564,6 @@
   .lightbox.active .lightbox-inner{transform:scale(1)}
   .lightbox-inner img{max-width:100%;max-height:76vh;object-fit:contain;display:block;border:1px solid rgba(126,203,86,.35);box-shadow:0 0 40px rgba(126,203,86,.15)}
   .lightbox-caption{color:var(--radar-green);font:500 .8rem/1.4 var(--mono);text-align:center;text-shadow:0 0 6px rgba(126,203,86,.5)}
-  .term-line.ready.visible .term-cursor{opacity:1}
-  @keyframes cursor-blink{0%,49%{opacity:1}50%,100%{opacity:0}}
-  .panel-close{
-    position:relative;display:inline-flex;align-items:center;gap:.6rem;margin-top:.7rem;flex:none;
-    background:none;border:none;color:var(--tech-muted);font:500 .78rem/1 var(--mono);
-    letter-spacing:.04em;cursor:pointer;padding:0;opacity:0;transition:opacity .3s ease,color .2s ease;
-  }
-  .panel-close.visible{opacity:1}
-  .panel-close:hover{color:var(--radar-green)}
-  .panel-close::before{content:">";color:var(--radar-green)}
-
-  .radar-scrim{position:fixed;inset:0;z-index:19;background:rgba(6,8,13,.5);opacity:0;pointer-events:none;transition:opacity .5s var(--ease)}
-  body.radar-locked .radar-scrim{opacity:1;pointer-events:auto}
 
   .tech-timeline{padding:10rem 4vw;display:grid;grid-template-columns:.58fr 1.2fr;gap:8vw}
   .tech-timeline h2{position:sticky;top:130px;align-self:start;margin:0;font:600 clamp(3rem,6vw,6rem)/.9 var(--sans);letter-spacing:-.06em;text-transform:uppercase}
@@ -575,13 +574,8 @@
   .timeline-item time{display:block;margin-bottom:1rem;color:var(--tech-green);font:500 .68rem/1 var(--mono);letter-spacing:.14em;text-transform:uppercase}
   .timeline-item h3{margin:0 0 .8rem;font-size:clamp(1.6rem,2.6vw,2.7rem);letter-spacing:-.035em}
   .timeline-item p{margin:0;max-width:700px;color:var(--tech-muted);line-height:1.72}
-  .tech-stack{overflow:hidden;padding:2rem 0;border-top:1px solid rgba(238,246,255,.15);border-bottom:1px solid rgba(238,246,255,.15);white-space:nowrap}
-  .tech-stack-track{display:inline-flex;gap:4rem;font:500 clamp(2rem,4vw,4rem)/1 var(--mono);text-transform:uppercase;color:rgba(238,246,255,.23);animation:marquee 25s linear infinite}
-  .tech-stack-track b{color:var(--tech-cyan);font-weight:500}
-  .tech-contact{padding:12rem 4vw 5rem}
-  .tech-contact h2{margin:0;max-width:1100px;font:650 clamp(4rem,9vw,9.6rem)/.78 var(--sans);letter-spacing:-.075em;text-transform:uppercase}
-  .tech-contact h2 span{color:var(--tech-green)}
-  .tech-contact-bottom{margin-top:6rem;padding-top:1.6rem;border-top:1px solid rgba(238,246,255,.16);display:flex;justify-content:space-between;align-items:center;color:var(--tech-muted)}
+  .tech-contact{padding:5rem 4vw 5rem}
+  .tech-contact-bottom{padding-top:1.6rem;border-top:1px solid rgba(238,246,255,.16);display:flex;justify-content:space-between;align-items:center;color:var(--tech-muted)}
 
   /* DEBATE */
   .debate-page{background:var(--cream);color:var(--charcoal);font-family:var(--sans)}
@@ -853,7 +847,7 @@
     .topbar{height:68px}.brand{font-size:.65rem}.track-toggle button{padding:.55rem .66rem;font-size:.58rem}
     .landing{padding-top:100px}.landing h1{font-size:clamp(3.1rem,14.5vw,5.4rem);letter-spacing:-.065em}.landing-profile{grid-template-columns:1fr;gap:1.25rem;margin-top:.4rem}.landing-profile-photo{justify-self:center;max-width:210px;padding:10px}.landing-summary{font-size:.86rem;max-width:94%;}.landing-signal{width:100vw;max-width:100vw;left:50%;transform:translateX(-50%);height:145px;margin-top:.45rem;margin-bottom:0}.portal-title{font-size:clamp(2.8rem,15vw,4.5rem)}
     .computer-hero,.debate-hero{padding-top:115px}.computer-hero h1,.debate-hero h1{font-size:clamp(4rem,20vw,7rem)}.tech-readout,.debate-issue{display:none}
-    .tech-projects-head{display:block}.tech-projects-head p{text-align:left;margin-top:1.5rem}.radar-frame{width:86vmin}.hud-status .brg{display:none}
+    .tech-projects-head{display:block}.tech-projects-head p{text-align:left;margin-top:1.5rem}.radar-field{--radar-offset:0px!important;margin-top:0}.radar-frame{width:86vmin}
     .tech-manifesto,.tech-timeline,.testimonials,.offerings,.debate-bio,.debate-record{padding-top:7rem;padding-bottom:7rem}.manifesto-meta{gap:1.5rem}.record-line{grid-template-columns:1fr}.record-stat{padding:1.5rem 0;border-top:1px solid rgba(245,240,232,.15)}
     .quote{padding:3.5rem 0}.quote blockquote{font-size:2rem}.offering-button{grid-template-columns:.2fr 1fr auto}.offering-name{font-size:2rem}.debate-contact{min-height:70vh}
     .computer-side,.debate-side{padding-left:0;border-left:0}.flow-line{width:100vw;right:-35vw;opacity:.18}
@@ -952,13 +946,14 @@
   <section class="page track-page computer-page" id="computer" hidden>
     <div class="cursor-aura" id="radarCursorAura"></div>
     <section class="tech-projects" id="projects">
-      <div class="tech-projects-head reveal"><h1>Selected<br>work</h1><p>Sweep pings known systems<br>click a contact to lock</p></div>
+      <div class="tech-projects-head reveal">
+        <h1 id="selectedWorkHeading" data-text="Selected&#10;work">Selected<br>work</h1>
+        <p>Click a contact on the radar to open a project.</p>
+      </div>
 
       <div class="radar-field reveal">
         <div class="radar-ambient-glow"></div>
         <div class="hud-status">
-          <span class="dot"></span>
-          <span id="radarStatusText">System · Scanning</span>
           <span class="brg">Bearing <b id="radarBearingReadout">000°</b></span>
         </div>
 
@@ -1007,29 +1002,28 @@
               <div class="radar-center"></div>
 
               <div class="blip" data-bearing="55" data-radius="190" style="left:75.94%;top:31.84%">
-                <div class="blip-dot"></div>
-                <div class="blip-label">P—001 · Nanosatellite Cyber Hardening</div>
+                <button class="blip-dot" type="button" aria-label="Open Project 1: Nanosatellite Cyber Hardening"></button>
+                <div class="blip-label">Project 1: Nanosatellite Cyber Hardening</div>
               </div>
               <div class="blip" data-side="left" data-bearing="205" data-radius="130" style="left:40.84%;top:69.64%">
-                <div class="blip-dot"></div>
-                <div class="blip-label">P—002 · Underwater Acoustic Link</div>
+                <button class="blip-dot" type="button" aria-label="Open Project 2: Underwater Acoustic Link"></button>
+                <div class="blip-label">Project 2: Underwater Acoustic Link</div>
               </div>
               <div class="blip" data-side="left" data-bearing="320" data-radius="70" style="left:42.5%;top:41.06%">
-                <div class="blip-dot"></div>
-                <div class="blip-label">P—003 · Spacesuit Cooling System</div>
+                <button class="blip-dot" type="button" aria-label="Open Project 3: Spacesuit Cooling System"></button>
+                <div class="blip-label">Project 3: Spacesuit Cooling System</div>
+              </div>
+              <div class="blip" data-bearing="150" data-radius="200" style="left:66.67%;top:78.87%">
+                <button class="blip-dot" type="button" aria-label="Open Project 4: PacketVigil: AI Cyberattack Detection"></button>
+                <div class="blip-label">Project 4: PacketVigil: AI Cyberattack Detection</div>
               </div>
             </div>
           </div>
         </div>
 
-        <p class="hint"><b>Sweep active</b> — targets ping on contact · click a contact to lock and read the full write-up</p>
+        <article class="dossier" id="radarDossier" aria-labelledby="radarDossierTitle" hidden></article>
+        <div class="radar-shards" id="radarShards" aria-hidden="true"></div>
       </div>
-
-      <div class="radar-scrim" id="radarScrim"></div>
-      <aside class="panel" id="radarPanel">
-        <div id="radarPanelTerm"></div>
-        <button class="panel-close" id="radarPanelClose">Resume scan</button>
-      </aside>
 
       <div class="lightbox" id="radarLightbox">
         <div class="lightbox-inner">
@@ -1039,13 +1033,39 @@
       </div>
     </section>
 
-    <div class="tech-stack" aria-hidden="true"><div class="tech-stack-track"><span>Python</span><b>GNU Radio</b><span>Linux</span><b>USRP</b><span>Embedded Systems</span><b>Cybersecurity</b><span>Signal Processing</span><span>Python</span><b>GNU Radio</b><span>Linux</span><b>USRP</b><span>Embedded Systems</span><b>Cybersecurity</b><span>Signal Processing</span></div></div>
-
     <section class="tech-contact">
-      <h2 class="reveal">Let’s build something that <span>matters.</span></h2>
-      <div class="tech-contact-bottom"><span>Engineering — Research — Collaboration</span><a class="terminal-link" href="mailto:manlybros11@gmail.com">manlybros11@gmail.com</a></div>
+      <div class="tech-contact-bottom"><span>Engineering — Research — Collaboration</span><a class="terminal-link" href="mailto:smrkva30@gmail.com">smrkva30@gmail.com</a></div>
     </section>
   </section>
+
+  <script>
+  (() => {
+    const radarField = document.querySelector('.radar-field');
+    const selectedWorkHeading = document.getElementById('selectedWorkHeading');
+    const radarOuterCircle = document.querySelector('.radar-rings .outer');
+    if(!radarField || !selectedWorkHeading || !radarOuterCircle) return;
+
+    function alignRadarWithHeading(){
+      if(window.matchMedia('(max-width: 600px)').matches){
+        radarField.style.removeProperty('--radar-offset');
+        return;
+      }
+      const currentOffset = parseFloat(getComputedStyle(radarField).marginTop) || 0;
+      const headingBottom = selectedWorkHeading.getBoundingClientRect().bottom;
+      const circleTop = radarOuterCircle.getBoundingClientRect().top;
+      radarField.style.setProperty('--radar-offset', `${currentOffset + headingBottom - circleTop}px`);
+    }
+
+    let resizeFrame;
+    window.addEventListener('resize', () => {
+      cancelAnimationFrame(resizeFrame);
+      resizeFrame = requestAnimationFrame(alignRadarWithHeading);
+    });
+    // The section can start hidden (opened from / or /debate/), so realign once it gets a size.
+    if('ResizeObserver' in window) new ResizeObserver(alignRadarWithHeading).observe(selectedWorkHeading);
+    alignRadarWithHeading();
+  })();
+  </script>
 
   <section class="page track-page debate-page" id="debate">
     <nav class="debate-sticky-actions" aria-label="Debate coaching actions">
@@ -1558,13 +1578,13 @@
       desc:'Built a Python/Linux SDR testbed using GNU Radio to analyze and manipulate Zigbee RF traffic for nanosatellite cybersecurity testing.',
       sections:[
         {label:'SETUP', text:'Sniffing and injection are done by a Universal Software Radio Peripheral interfacing with an open-source 802.15.4 GNU Radio transceiver on Ubuntu 22. Captured packets are piped to Wireshark. Scapy re-packages captured frames and sends them to the USRP for transmission over a local UDP socket.'},
-        {label:'RECON', text:'Xbee operates in the 2.4 GHz band across 16 possible channels. Generating a spectrogram of the Rx interface isolates which channel comms are on. The USRP is then tuned to that frequency and begins sniffing packets, viewable in Wireshark through a Zigbee profile that formats the packet info.'},
+        {label:'RECON', text:'Xbee operates in the <strong>2.4 GHz</strong> band across <strong>16 possible channels</strong>. Generating a spectrogram of the Rx interface isolates which channel comms are on. The USRP is then tuned to that frequency and begins sniffing packets, viewable in Wireshark through a Zigbee profile that formats the packet info.'},
         {label:'INJECTION', text:'Scapy repackages the packet of interest into byte form and sends it to a UDP port specified by GRC. GNU Radio modulates the packet at the target communication frequency, and the USRP injects it into the network.'}
       ],
       specs:['Python / Linux','GNU Radio / USRP','Zigbee (802.15.4)','Scapy packet injection'],
       attachments:[
-        {type:'image', src:'../assets/projects/p1-wireshark.png', caption:'Sniffed Zigbee frame, decoded in Wireshark'},
-        {type:'image', src:'../assets/projects/p1-setup.png', caption:'Ground station / EyesSat RF test setup'}
+        {type:'image', src:'/assets/projects/p1-wireshark.png', caption:'Sniffed Zigbee frame, decoded in Wireshark'},
+        {type:'image', src:'/assets/projects/p1-setup.png', caption:'Ground station / EyesSat RF test setup'}
       ]
     },
     {
@@ -1579,14 +1599,34 @@
       role:'Electronics Chair',
       desc:'Designed ACCESS (Aqueous Cooling Compressed Electric Spacesuit System), a compact spacesuit cooling system for astronaut training in the Neutral Buoyancy Lab; final testing conducted at the NBL and Johnson Space Center.',
       sections:[
-        {label:'FUNDING', text:'Secured $3,000 in funding for device assembly, educational outreach, and travel for project testing.'},
+        {label:'FUNDING', text:'Secured <strong>$3,000</strong> in funding for device assembly, educational outreach, and travel for project testing.'},
         {label:'ELECTRONICS', text:'Designed and built the internal electronics system, including diver-operated variable temperature control, an emergency shut-off thermistor, and full power distribution.'}
       ],
       specs:['Mechanical prototyping','Electronics design','Thermal systems','NBL / JSC testing'],
       attachments:[
-        {type:'image', src:'../assets/projects/p3-cad.png', caption:'ACCESS CAD model'},
-        {type:'image', src:'../assets/projects/p3-nbl-test.jpg', caption:'Underwater test at the Neutral Buoyancy Lab'},
-        {type:'pdf', src:'../assets/projects/p3-report.pdf', caption:'Final technical report (PDF)'}
+        {type:'image', src:'/assets/projects/p3-cad.png', caption:'ACCESS CAD model'},
+        {type:'image', src:'/assets/projects/p3-nbl-test.jpg', caption:'Underwater test at the Neutral Buoyancy Lab'},
+        {type:'pdf', src:'/assets/projects/p3-report.pdf', caption:'Final technical report (PDF)'}
+      ]
+    },
+    {
+      num:'P—004', bearing:150, radius:200,
+      title:'PacketVigil: <em>AI Cyberattack Detection</em>',
+      desc:'Built a real-time ML intrusion detection system in Python/Linux that detects cyberattacks in live network traffic on ordinary hardware.',
+      sections:[
+        {label:'BACKGROUND', text:'Kitsune (Mirsky et al., NDSS 2018) is an open-source intrusion detection research project. It introduced AfterImage, a lightweight way to summarize how each host and connection on a network is behaving as packets arrive. The authors also released labeled packet captures of real attacks, which became a common benchmark. PacketVigil builds on AfterImage and those datasets, and adds its own two-stage ML detector, live capture pipeline and dashboard.'},
+        {label:'PIPELINE', text:'dumpcap captures traffic from a live network interface and streams the raw bytes straight into a dpkt parser, with no intermediate files. Each packet goes through AfterImage, adapted from Kitsune. It keeps running statistics per host, connection and socket over five time windows that weight recent traffic more heavily. The result is a <strong>115-feature</strong> vector per packet. Packet contents are never stored.'},
+        {label:'DETECTION', text:'An autoencoder trained only on normal traffic scores every packet by how badly it reconstructs it; a high error means the packet looks abnormal. Packets above the threshold go to a <strong>400-tree</strong> Random Forest, which confirms or rejects the attack. The autoencoder screens out <strong>85–99%</strong> of normal traffic, so the slower Random Forest only sees suspicious packets. The ML stage runs in its own process, so it doesn’t compete with packet capture under Python’s GIL. Confirmed attacks stream to a Flask/Dash dashboard with live alerts and system metrics.'},
+        {label:'TESTING', text:'Tested offline on seven of Kitsune’s labeled attack captures: man-in-the-middle, denial of service, reconnaissance and the Mirai botnet. Tested live by replaying captures with tcpreplay through a virtual network built from Linux namespaces into the detector, on a 3-core Ubuntu VM.'},
+        {label:'RESULTS', text:'On 6 of the 7 attacks: <strong>over 95% precision</strong> and <strong>over 90% recall</strong>, about <strong>1,200 packets/s</strong> throughput and <strong>0.7 ms per packet</strong>. It used <strong>under 1 GB of RAM</strong> and no GPU.'}
+      ],
+      specs:['Python / Linux','Autoencoder + Random Forest','dumpcap / dpkt / AfterImage','Flask / Dash'],
+      links:[{label:'View on GitHub', href:'https://github.com/SullyM30/Packet-Vigil'}],
+      attachments:[
+        {type:'image', src:'/assets/projects/p4-pipeline.webp', caption:'Pipeline Diagram'},
+        {type:'image', src:'/assets/projects/p4-testbed.webp', caption:'Live Testbed Setup'},
+        {type:'image', src:'/assets/projects/p4-confusion-os-scan.png', caption:'OS Scan Dataset Results'},
+        {type:'image', src:'/assets/projects/p4-poster.webp', caption:'Project Poster'}
       ]
     }
   ];
@@ -1608,14 +1648,16 @@
   }
 
   const body = document.body;
+  const field = document.querySelector('.radar-field');
+  const wrap = field.querySelector('.radar-wrap');
+  const stage = field.querySelector('.radar-stage');
+  const projectsHead = document.querySelector('.tech-projects-head');
   const blips = [...document.querySelectorAll('.blip')];
   const bearingReadout = document.getElementById('radarBearingReadout');
-  const statusText = document.getElementById('radarStatusText');
   const lockPath = document.getElementById('radarLockPath');
-  const panel = document.getElementById('radarPanel');
-  const panelTerm = document.getElementById('radarPanelTerm');
-  const panelClose = document.getElementById('radarPanelClose');
-  let termTimers = [];
+  const dossier = document.getElementById('radarDossier');
+  const shardLayer = document.getElementById('radarShards');
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
   const SWEEP_MS = 9000;
   const PING_HALF_WIDTH = 9;
@@ -1653,106 +1695,331 @@
   }
   requestAnimationFrame(tick);
 
-  function buildTermLines(project){
-    const slug = project.num.replace('P—','project_') + '.log';
-    const lines = [
-      { cls:'prompt', html:'guest@sullymrkva:~$ <b>cat ' + slug + '</b>' },
-      { cls:'kv', html:'<b>ID</b><em>' + project.num + '</em>' },
-      { cls:'kv', html:'<b>NAME</b><em>' + project.title.replace(/<\/?em>/g,'') + '</em>' }
-    ];
-    if(project.role) lines.push({ cls:'kv', html:'<b>ROLE</b><em>' + project.role + '</em>' });
-    lines.push({ cls:'blank' });
-    lines.push({ cls:'desc', html:project.desc });
-    (project.sections || []).forEach(sec => {
-      lines.push({ cls:'blank' });
-      lines.push({ cls:'label', html:sec.label });
-      lines.push({ cls:'desc', html:sec.text });
+  // ---- Lock -> decode transition -------------------------------------
+  // Clicking a contact shatters the radar's rings/spokes into line shards,
+  // the shards fly into the write-up's horizontal rules, the title decodes,
+  // and the write-up falls in. "Resume scan" plays it back the other way.
+  const EASE_OUT = 'cubic-bezier(0.23, 1, 0.32, 1)';
+  const EASE_IN_OUT = 'cubic-bezier(0.77, 0, 0.175, 1)';
+  const SHARD_W = 100;
+  const GLYPHS = 'ABCDEFHKMNPRSTXZ0123456789#/<>';
+
+  let state = 'scanning'; // scanning | opening | open | closing
+  let skipping = false;
+  let running = [];
+  let waiters = [];
+  let finishScramble = null;
+  let activeBlip = null;
+  let activeProject = null;
+
+  function play(el, keyframes, options){
+    const opts = { fill:'both', ...options };
+    if(skipping){ opts.duration = 0; opts.delay = 0; }
+    const anim = el.animate(keyframes, opts);
+    running.push(anim);
+    return anim;
+  }
+  function done(anims){ return Promise.all(anims.map(a => a.finished.catch(() => {}))); }
+  function wait(ms){
+    if(skipping) return Promise.resolve();
+    return new Promise(resolve => {
+      const t = setTimeout(resolve, ms);
+      waiters.push(() => { clearTimeout(t); resolve(); });
     });
-    lines.push({ cls:'blank' });
-    lines.push({ cls:'label', html:'SPECS' });
-    project.specs.forEach(s => lines.push({ cls:'spec', html:'&gt; ' + s }));
-    if(project.attachments && project.attachments.length){
-      lines.push({ cls:'blank' });
-      lines.push({ cls:'label', html:'CAPTURES' });
-      lines.push({ cls:'attachments', attachments:project.attachments });
-    }
-    lines.push({ cls:'ready', html:'guest@sullymrkva:~$ <span class="term-cursor"></span>' });
-    return lines;
   }
-
-  function clearTermTimers(){
-    termTimers.forEach(clearTimeout);
-    termTimers = [];
+  function skip(){
+    if(skipping) return;
+    skipping = true;
+    running.forEach(a => { try{ a.finish(); }catch(e){} });
+    waiters.forEach(w => w());
+    waiters = [];
+    if(finishScramble) finishScramble();
   }
+  function settle(){
+    running.forEach(a => a.cancel());
+    running = [];
+    waiters = [];
+    shardLayer.innerHTML = '';
+    skipping = false;
+  }
+  function rand(min, max){ return min + Math.random() * (max - min); }
 
-  function runTerminal(project){
-    clearTermTimers();
-    panelTerm.innerHTML = '';
-    panelTerm.scrollTop = 0;
-    panelClose.classList.remove('visible');
+  const T = s => `translate(${s.x - SHARD_W / 2}px, ${s.y}px) rotate(${s.rot}deg) scaleX(${s.len / SHARD_W})`;
+  const jittered = (s, amt) => ({ ...s, x:s.x + rand(-amt, amt), y:s.y + rand(-amt, amt) });
 
-    const lines = buildTermLines(project);
-    lines.forEach(line => {
-      const el = document.createElement('div');
-      el.className = 'term-line' + (line.cls ? ' ' + line.cls : '');
-      if(line.cls === 'attachments'){
-        line.attachments.forEach(att => {
-          const btn = document.createElement('button');
-          btn.type = 'button';
-          btn.className = 'term-thumb';
-          if(att.type === 'pdf'){
-            btn.innerHTML = `<span class="term-thumb-pdf">PDF</span><span>${att.caption}</span>`;
-            btn.addEventListener('click', () => window.open(att.src, '_blank', 'noopener'));
-          } else {
-            btn.innerHTML = `<img src="${att.src}" alt="${att.caption}" loading="lazy"><span>${att.caption}</span>`;
-            btn.addEventListener('click', () => openLightbox(att));
-          }
-          el.appendChild(btn);
-        });
-      } else if(line.html){
-        el.innerHTML = line.html;
+  // Radar geometry in .radar-field coordinates: ring arcs, spokes and ticks.
+  function radarSegments(){
+    const f = field.getBoundingClientRect();
+    const r = stage.getBoundingClientRect();
+    const k = r.width / 600;
+    const ox = r.left - f.left, oy = r.top - f.top;
+    const segs = [];
+    const at = (rad, deg) => {
+      const a = deg * Math.PI / 180;
+      return { x: ox + (cx + rad * Math.sin(a)) * k, y: oy + (cy - rad * Math.cos(a)) * k };
+    };
+    [[60,6],[120,10],[180,14],[240,20]].forEach(([rad, count]) => {
+      for(let i = 0; i < count; i++){
+        const deg = (i + .5) / count * 360;
+        segs.push({ ...at(rad, deg), rot:deg, len:(2 * Math.PI * rad / count) * .62 * k });
       }
-      panelTerm.appendChild(el);
     });
-
-    const lineEls = [...panelTerm.children];
-    lineEls.forEach((el, i) => {
-      const delay = lines[i].cls === 'blank' ? 60 : 120;
-      termTimers.push(setTimeout(() => el.classList.add('visible'), i === 0 ? 0 : delay * i));
-    });
-    termTimers.push(setTimeout(() => panelClose.classList.add('visible'), (lineEls.length + 1) * 120));
+    for(let deg = 0; deg < 360; deg += 30) segs.push({ ...at(150, deg), rot:deg - 90, len:150 * k });
+    for(let deg = 0; deg < 360; deg += 15) segs.push({ ...at(232, deg), rot:deg - 90, len:8 * k });
+    return segs.sort((a, b) => a.y - b.y);
   }
 
-  function openPanel(blip, project){
+  // Split the on-screen rules into one slot per shard, weighted by width.
+  function ruleSlots(count){
+    const f = field.getBoundingClientRect();
+    const limit = window.innerHeight + 160;
+    const rules = [...dossier.querySelectorAll('.dossier-rule')];
+    const visible = rules.filter(rule => rule.getBoundingClientRect().top < limit);
+    const used = visible.length ? visible : rules.slice(0, 1);
+    const totalW = used.reduce((sum, rule) => sum + rule.getBoundingClientRect().width, 0);
+    const slots = [];
+    used.forEach((rule, i) => {
+      const rr = rule.getBoundingClientRect();
+      const n = i === used.length - 1 ? count - slots.length : Math.max(1, Math.round(count * rr.width / totalW));
+      for(let j = 0; j < n && slots.length < count; j++){
+        slots.push({ x: rr.left - f.left + (j + .5) * rr.width / n, y: rr.top - f.top, rot:0, len: rr.width / n * 1.04 });
+      }
+    });
+    return { slots, rules:used };
+  }
+
+  function makeShards(count){
+    return Array.from({ length:count }, () => {
+      const el = document.createElement('i');
+      el.className = 'radar-shard';
+      shardLayer.appendChild(el);
+      return el;
+    });
+  }
+
+  // Resolve the title left to right through random glyphs.
+  function scramble(el, duration){
+    const nodes = [];
+    const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+    while(walker.nextNode()) nodes.push({ node:walker.currentNode, text:walker.currentNode.nodeValue });
+    const total = nodes.reduce((sum, n) => sum + n.text.length, 0);
+    return new Promise(resolve => {
+      let frame;
+      const t0 = performance.now();
+      finishScramble = () => {
+        cancelAnimationFrame(frame);
+        nodes.forEach(n => { n.node.nodeValue = n.text; });
+        finishScramble = null;
+        resolve();
+      };
+      if(skipping) return finishScramble();
+      const step = now => {
+        const p = Math.min(1, (now - t0) / duration);
+        const solved = total * (1 - Math.pow(1 - p, 2));
+        let idx = 0;
+        nodes.forEach(n => {
+          let out = '';
+          for(const ch of n.text){
+            out += (idx < solved || ch === ' ') ? ch : GLYPHS[Math.floor(Math.random() * GLYPHS.length)];
+            idx++;
+          }
+          n.node.nodeValue = out;
+        });
+        if(p < 1) frame = requestAnimationFrame(step);
+        else finishScramble();
+      };
+      frame = requestAnimationFrame(step);
+    });
+  }
+
+  function renderDossier(project){
+    const plainTitle = project.title.replace(/<\/?em>/g,'');
+    const row = (label, inner, n) => `<div class="dossier-rule"></div><div class="dossier-row"><h3 class="dossier-label d-item">${n ? `<span class="dossier-num">${n}</span>` : ''}${label}</h3>${inner}</div>`;
+    let html = `<h2 class="dossier-title" id="radarDossierTitle" tabindex="-1" aria-label="${plainTitle}">${project.title}</h2>
+      ${project.role ? `<p class="dossier-meta d-item">${project.role}</p>` : ''}
+      <div class="dossier-rule"></div>
+      <p class="dossier-desc d-item">${project.desc}</p>`;
+    if(project.links && project.links.length){
+      html += `<div class="dossier-links d-item">${project.links.map(l => `<a class="dossier-link" href="${l.href}" target="_blank" rel="noopener">${l.label} ↗</a>`).join('')}</div>`;
+    }
+    (project.sections || []).forEach((sec, i) => { html += row(sec.label, `<p class="dossier-text d-item">${sec.text}</p>`, i + 1); });
+    html += row('SPECS', `<ul class="dossier-specs d-item">${project.specs.map(s => `<li>${s}</li>`).join('')}</ul>`);
+    if(project.attachments && project.attachments.length){
+      html += row('CAPTURES', `<div class="dossier-captures">${project.attachments.map((att, i) => att.type === 'pdf'
+        ? `<button type="button" class="dossier-thumb d-item" data-att="${i}"><span class="dossier-thumb-pdf">PDF</span><span>${att.caption}</span></button>`
+        : `<button type="button" class="dossier-thumb d-item" data-att="${i}"><img src="${att.src}" alt="${att.caption}"><span>${att.caption}</span></button>`
+      ).join('')}</div>`);
+    }
+    html += `<button type="button" class="dossier-close d-item" id="radarDossierClose">Resume scan</button>`;
+    dossier.innerHTML = html;
+
+    dossier.querySelectorAll('.dossier-thumb').forEach(btn => {
+      const att = project.attachments[Number(btn.dataset.att)];
+      btn.addEventListener('click', () => att.type === 'pdf' ? window.open(att.src, '_blank', 'noopener') : openLightbox(att));
+    });
+    dossier.querySelector('#radarDossierClose').addEventListener('click', closeDossier);
+  }
+
+  function lockOn(blip){
     blips.forEach(b => b.classList.remove('selected'));
     blip.classList.add('selected');
-
     const r = Number(blip.dataset.radius);
     const a = Number(blip.dataset.bearing) * Math.PI / 180;
-    const x = cx + r * Math.sin(a);
-    const y = cy - r * Math.cos(a);
-    lockPath.setAttribute('d', `M${cx} ${cy} L${x} ${y}`);
-
-    runTerminal(project);
-
-    statusText.textContent = 'System · Locked';
+    lockPath.setAttribute('d', `M${cx} ${cy} L${cx + r * Math.sin(a)} ${cy - r * Math.cos(a)}`);
+    bearingReadout.textContent = String(blip.dataset.bearing).padStart(3,'0') + '°';
     locked = true;
     body.classList.add('radar-locked');
   }
 
-  function closePanel(){
+  function unlock(){
     locked = false;
     body.classList.remove('radar-locked');
-    statusText.textContent = 'System · Scanning';
     blips.forEach(b => b.classList.remove('selected'));
-    clearTermTimers();
+  }
+
+  // Pin the radar where it is so the write-up takes its place in the flow,
+  // starting below the "Selected work" heading the radar sits beside.
+  function pinRadar(){
+    const wrapTop = wrap.offsetTop - parseFloat(getComputedStyle(wrap).marginTop);
+    field.style.setProperty('--wrap-top', wrapTop + 'px');
+    const headBottom = projectsHead ? projectsHead.getBoundingClientRect().bottom - field.getBoundingClientRect().top : 0;
+    dossier.style.marginTop = Math.max(16, headBottom + 40 - wrapTop) + 'px';
+    field.classList.add('is-locked');
+  }
+
+  async function openDossier(blip, project){
+    if(state !== 'scanning') return;
+    state = 'opening';
+    activeBlip = blip;
+    activeProject = project;
+    lockOn(blip);
+
+    const segs = radarSegments();
+    pinRadar();
+    renderDossier(project);
+    dossier.classList.add('is-pending');
+    dossier.hidden = false;
+    const title = dossier.querySelector('.dossier-title');
+    const items = [...dossier.querySelectorAll('.d-item, .dossier-rule')];
+
+    if(reducedMotion.matches){
+      dossier.classList.remove('is-pending');
+      const fades = [
+        play(wrap, [{ opacity:1 }, { opacity:0 }], { duration:200, easing:'ease' }),
+        play(dossier, [{ opacity:0 }, { opacity:1 }], { duration:200, easing:'ease' })
+      ];
+      await done(fades);
+    } else {
+      title.style.height = title.offsetHeight + 'px';
+      title.style.visibility = 'hidden';
+      await wait(170);
+
+      // Fizz: the radar flickers out and its lines break into shards.
+      play(wrap, [{ opacity:1 }, { opacity:.25, offset:.3 }, { opacity:.7, offset:.55 }, { opacity:0 }], { duration:220, easing:'linear' });
+      const shards = makeShards(segs.length);
+      const drifted = segs.map(s => jittered(s, 10));
+      const fizz = shards.map((el, i) => play(el, [
+        { transform:T(segs[i]), opacity:1 },
+        { transform:T(jittered(segs[i], 4)), opacity:.35, offset:.3 },
+        { transform:T(jittered(segs[i], 5)), opacity:1, offset:.55 },
+        { transform:T(jittered(segs[i], 6)), opacity:.5, offset:.8 },
+        { transform:T(drifted[i]), opacity:1 }
+      ], { duration:320, easing:'linear' }));
+      await done(fizz);
+
+      // Reorganize: shards fly into the rules while the title decodes.
+      const { slots, rules } = ruleSlots(segs.length);
+      const flights = shards.map((el, i) => play(el, [
+        { transform:T(drifted[i]), opacity:1 },
+        { transform:T(slots[i]), opacity:1 }
+      ], { duration:460, delay:rand(0, 110), easing:EASE_IN_OUT }));
+      const decoding = wait(80).then(() => { title.style.visibility = ''; return scramble(title, 620); });
+      await done(flights);
+
+      // Land: rules take over from the shards, then the write-up falls in.
+      rules.forEach(rule => play(rule, [{ opacity:0 }, { opacity:1 }], { duration:120, easing:'linear' }));
+      shards.forEach(el => play(el, [{ opacity:1 }, { opacity:0 }], { duration:180, easing:'linear' }));
+      const rest = items.filter(el => !rules.includes(el));
+      const gap = Math.min(45, 520 / Math.max(1, rest.length));
+      const falls = rest.map((el, i) => {
+        const delay = i * gap;
+        if(el.classList.contains('dossier-rule')){
+          return play(el, [{ opacity:1, transform:'scaleX(0)' }, { opacity:1, transform:'scaleX(1)' }], { duration:420, delay, easing:EASE_OUT });
+        }
+        const lift = el.classList.contains('dossier-thumb') ? 'translateY(-22px) scale(.97)' : 'translateY(-14px)';
+        return play(el, [{ opacity:0, transform:lift }, { opacity:1, transform:'none' }], { duration:340, delay, easing:EASE_OUT });
+      });
+      await Promise.all([done(falls), decoding]);
+      title.style.height = '';
+      title.style.visibility = '';
+    }
+
+    field.classList.add('is-decoded');
+    dossier.classList.remove('is-pending');
+    settle();
+    state = 'open';
+    title.focus({ preventScroll:true });
+  }
+
+  async function closeDossier(){
+    if(state !== 'open') return;
+    state = 'closing';
+
+    const fieldTop = field.getBoundingClientRect().top;
+    if(fieldTop < 0) window.scrollTo({ top:window.scrollY + fieldTop - 100, behavior:reducedMotion.matches ? 'auto' : 'smooth' });
+
+    if(reducedMotion.matches){
+      await done([play(dossier, [{ opacity:1 }, { opacity:0 }], { duration:180, easing:'ease' })]);
+      play(wrap, [{ opacity:0 }, { opacity:1 }], { duration:200, easing:'ease' });
+      field.classList.remove('is-decoded');
+      dossier.hidden = true;
+      field.classList.remove('is-locked');
+      await done(running);
+    } else {
+      const segs = radarSegments();
+      const { slots, rules } = ruleSlots(segs.length);
+      const content = [...dossier.querySelectorAll('.d-item, .dossier-title, .dossier-rule')].filter(el => !rules.includes(el));
+      content.forEach(el => play(el, [{ opacity:1, transform:'none' }, { opacity:0, transform:'translateY(-6px)' }], { duration:160, easing:EASE_OUT }));
+      rules.forEach(rule => play(rule, [{ opacity:1 }, { opacity:0 }], { duration:90, delay:60, easing:'linear' }));
+
+      // Shards lift off the rules, fly home and fizz back into the radar.
+      const shards = makeShards(segs.length);
+      const DUR = 760;
+      const flights = shards.map((el, i) => play(el, [
+        { transform:T(slots[i]), opacity:0 },
+        { transform:T(slots[i]), opacity:1, offset:.08 },
+        { transform:T(jittered(slots[i], 6)), opacity:1, offset:.2, easing:EASE_IN_OUT },
+        { transform:T(segs[i]), opacity:1, offset:.78 },
+        { transform:T(jittered(segs[i], 4)), opacity:.3, offset:.86 },
+        { transform:T(segs[i]), opacity:.8, offset:.93 },
+        { transform:T(segs[i]), opacity:0 }
+      ], { duration:DUR, delay:rand(0, 80), easing:'linear' }));
+      play(wrap, [{ opacity:0 }, { opacity:0, offset:.7 }, { opacity:.6, offset:.8 }, { opacity:.3, offset:.88 }, { opacity:1 }], { duration:DUR + 80, easing:'linear' });
+      field.classList.remove('is-decoded');
+      await done(flights);
+      await done(running);
+      dossier.hidden = true;
+      field.classList.remove('is-locked');
+    }
+
+    dossier.innerHTML = '';
+    dossier.style.marginTop = '';
+    settle();
+    unlock();
+    state = 'scanning';
+    const dot = activeBlip && activeBlip.querySelector('.blip-dot');
+    if(dot && dot.focus) dot.focus({ preventScroll:true });
+    activeBlip = activeProject = null;
   }
 
   blips.forEach((blip, i) => {
-    blip.addEventListener('click', () => openPanel(blip, projects[i]));
+    blip.addEventListener('click', event => {
+      event.stopPropagation();
+      openDossier(blip, projects[i]);
+    });
   });
-  panelClose.addEventListener('click', closePanel);
-  document.getElementById('radarScrim').addEventListener('click', closePanel);
+  // Any click during the intro skips straight to the finished write-up.
+  field.addEventListener('pointerdown', () => { if(state === 'opening') skip(); });
 
   const lightbox = document.getElementById('radarLightbox');
   const lightboxImg = document.getElementById('radarLightboxImg');
@@ -1766,7 +2033,12 @@
   function closeLightbox(){ lightbox.classList.remove('active'); }
   lightbox.addEventListener('click', closeLightbox);
   lightbox.querySelector('.lightbox-inner').addEventListener('click', e => e.stopPropagation());
-  window.addEventListener('keydown', e => { if(e.key === 'Escape') closeLightbox(); });
+  window.addEventListener('keydown', e => {
+    if(e.key !== 'Escape') return;
+    if(lightbox.classList.contains('active')) closeLightbox();
+    else if(state === 'opening') skip();
+    else if(state === 'open') closeDossier();
+  });
 
   const cursorAura = document.getElementById('radarCursorAura');
   let auraIdleTimer = null;
